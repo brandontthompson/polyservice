@@ -1,5 +1,6 @@
-import { iresult } from "../src/iresult";
-import { format, imethod, iservice } from "../src/iservice";
+import { IO } from "../lib/iinterface";
+import { iresult } from "../lib/iresult";
+import { format, imethod, iservice } from "../lib/iservice";
 
 const print:imethod = {
     name: "print",
@@ -45,5 +46,6 @@ const postPrint:imethod = {
 
 export const test:iservice = {
     name: "testservice",
-    method: [print, postPrint]
+    method: [print, postPrint],
+    interface: IO.WEB,
 }
