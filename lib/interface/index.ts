@@ -4,6 +4,6 @@ import { web } from "./web";
 
 export default{
     cli,
-    socket,
     web,
+    socket,
 }

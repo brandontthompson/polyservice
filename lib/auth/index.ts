@@ -8,9 +8,9 @@ export async function protect(auth:iauth, obj:any):Promise<boolean> {
             break;
         }
         case(authType.BEARER):{
-            // const bearer = obj.headers["authorization"]
-            // if(!bearer || !bearer.startsWith('Bearer'))
-            key = obj.headers["authorization"].split("Bearer ")[1].trim();
+            const bearer = obj.headers["authorization"]
+            if(!bearer || !bearer.startsWith("Bearer ")) return false;
+            key = bearer.split("Bearer ")[1].trim();
             break;
         }
         case(authType.BODY):{

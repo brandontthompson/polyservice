@@ -1,7 +1,5 @@
-import { ierror } from "./ierror";
-
 export interface iresult{
+    error: boolean
     code: number
-    data: any
-    error?: ierror | null
+    message: any
 }

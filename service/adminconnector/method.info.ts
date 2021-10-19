@@ -16,9 +16,9 @@ export const info:imethod = {
             services: service.services(),
         }
         return {
+            error: false,
             code: 200,
-            data: data,
-            error: null,
+            message: data,
         };
     }),
 }

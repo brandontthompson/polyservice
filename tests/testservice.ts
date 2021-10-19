@@ -1,14 +1,15 @@
-import { authType, format, imethod, iservice } from "../lib/iservice";
-import { iresult } from "../lib/iresult";
-import { IO } from "../lib/iinterface";
+import { authType, format, imethod, iservice, IO, iresult } from "../index";
 
 const print:imethod = {
     name: "print",
     request: "GET",
-    // protect: {
-    //     type: authType.BEARER,
-    //     fnc: oauth,
-    // },
+    protect: {
+        type: authType.BEARER,
+        fnc: ((key:string, obj:any) => {
+            console.log(key, obj);
+            return true;
+        }),
+    },
     alias: "prnt",
     desc: "print the variable",
     args: [
@@ -22,9 +23,9 @@ const print:imethod = {
     ],
     fnc: ((str: string) : iresult => {
         let response:iresult = {
+            error:false,
             code: 200,
-            data: str,
-            error: null,
+            message:str
         };
 
         return response;
@@ -51,9 +52,9 @@ const print2:imethod = {
     ],
     fnc: ((str: string) : iresult => {
         let response:iresult = {
+            error:false,
             code: 200,
-            data: str,
-            error: null,
+            message:str,
         };
 
         return response;
@@ -80,7 +81,7 @@ const postPrint:imethod = {
 export const test:iservice = {
     name: "testservice",
     method: [print, print2, postPrint],
-    interface: IO.WEB,
+    interface: IO.WEB | IO.SOC,
 }
 
 

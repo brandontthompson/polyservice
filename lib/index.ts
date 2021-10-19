@@ -1,7 +1,8 @@
 import { iservice } from "./iservice";
 import * as _interface from "./interface";
-import { imiddleware } from "./middleware/imiddleware";
+import { imiddleware } from "./imiddleware";
 import { HttpListener } from "./server";
+import { IO } from "./iinterface";
 /**
  * @private
  */
@@ -54,8 +55,8 @@ function init() {
     bind();
     console.log(`Loading ${services.length} service(s)...`)
     for (let index = 0; index < services.length; index++) {
-        for (const [name, obj] of Object.entries(_interface.default)) {
-            if((services[index].interface & obj.identifier) === obj.identifier){
+        for (const [name, obj] of Object.entries(_interface.default)) {           
+            if((services[index].interface & obj.identifier) === obj.identifier || (services[index].interface & IO.ALL) === IO.ALL){
                 console.log("LOADED: " + obj.name);
                 obj.init(services[index]);
             }
@@ -70,11 +71,11 @@ function init() {
  * @param middleware
  */
 function use(middleware:imiddleware) {
-    for (const [name, obj] of Object.entries(_interface.default)) {
-        if((middleware.interface & obj.identifier) === obj.identifier){
+    for (const [name, obj] of Object.entries(_interface.default)) {    
+        if((middleware.interface & obj.identifier) === obj.identifier || (middleware.interface & IO.ALL) === IO.ALL){
             obj.middleware(middleware.fnc);
-        }  
-    }        
+        }
+    }
 }
 
 /**
@@ -84,7 +85,7 @@ function bind() {
     console.log(`Binding ${services.length} service(s)...`)
     for (let index = 0; index < services.length; index++) {
         for (const [iface, obj] of Object.entries(_interface.default)) {
-            if((services[index].interface & obj.identifier) === obj.identifier){
+            if((services[index].interface & obj.identifier) === obj.identifier || (services[index].interface & IO.ALL) === IO.ALL){
                 console.log("BOUND: " + obj.name);
                 obj.bind(services[index]);
             }

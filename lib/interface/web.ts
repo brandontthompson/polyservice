@@ -31,7 +31,7 @@ function bind(service:iservice) {
 
     service.method.forEach((method, index)=> {
 
-        let url = buildURL(service.name, method);
+        const url = buildURL(service.name, method);
         
         if(method.protect != undefined && method.protect != null)
         {
@@ -57,9 +57,8 @@ function bind(service:iservice) {
 }
 
 
-function middleware(fnc:any) {
-    console.log(fnc);
-    app.use(fnc);
+function middleware(fnc:any){
+    app.use(fnc());
 }
 
 /**
@@ -79,10 +78,8 @@ function middleware(fnc:any) {
     return url;
 }
 
-async function resolver(req:any, res:any, method:imethod) {
-    // console.log(req, res);
-    
-    let param:any[] = [];
+async function resolver(req:any, res:any, method:imethod) {    
+    const param:any[] = [];
 
     for (let index = 0; index < method.args.length; index++) {
         // @TODO: catch invalid json https://stackoverflow.com/questions/29797946/handling-bad-json-parse-in-node-safely
@@ -101,7 +98,7 @@ async function resolver(req:any, res:any, method:imethod) {
         return res.status(400).end();
 
     
-    let result:iresult = await method.fnc(...param);
+    const result:iresult = await method.fnc(...param);
 
     if(result.error !== undefined && result.error !== null)
         return res.status(result.code).send(result);

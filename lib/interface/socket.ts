@@ -6,7 +6,8 @@ import { iresult } from "../iresult";
 import { HttpListener } from "../server";
 
 let io:Server;
-let services:iservice[] = [];
+const services:iservice[] = [];
+const mware:Function[] = [];
 
 export const socket:iinterface = {
     identifier: IO.SOC,
@@ -36,13 +37,15 @@ function bind(service:iservice) {
  * @public
  * @param fnc 
  */
-function middleware(fnc:any[]) {
-    fnc.forEach(m => {
-        io.use(function (socket, next) {
-            m(socket.request, next)
-        });
-    });
+function middleware(fnc:Function) {
+    mware.push(fnc);
 }
+
+/**
+ * @private
+ * @returns 
+ */
+ const wrap = (middleware: (arg0: any, arg1: {}, arg2: any) => any) => (socket: { request: any; }, next: any) => middleware(socket.request, {}, next);
 
 /**
  * @private
@@ -51,9 +54,11 @@ function middleware(fnc:any[]) {
 function listen(){
     if(io !== null && io !== undefined) return io;
 
-    io = new Server(HttpListener.Instance.httpServer);
+    io = new Server(HttpListener.Instance.httpServer, {});
 
     io.on('connection', function(soc:Socket) {
+        console.log("CONNECTED");
+        
         registerListeners(soc);
     });
 }
@@ -63,6 +68,12 @@ function listen(){
  * @param soc 
  */
 function registerListeners(soc:Socket) {
+    mware.forEach(m => {
+        io.use(function (socket, next) {
+            wrap(m(socket.request, next));
+        });
+    });
+
     for (let index = 0; index < services.length; index++) {
         services[index].method.forEach(function(method:imethod){
             soc.on(method.alias.toUpperCase(), function(context:any){

@@ -1,9 +1,9 @@
 export enum IO {
     None = 0,
     CLI = 1 << 0,
+    WEB = 1 << 1,
     SOC = 1 << 2,
-    WEB = 1 << 3,
-    ALL = ~(~0 << 4),
+    ALL = ~(~0 << 3),
 }
 
 export interface iinterface{

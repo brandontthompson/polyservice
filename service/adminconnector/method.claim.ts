@@ -18,12 +18,16 @@ export const claim:imethod = {
     ],
     fnc: ((key: string) : iresult => {
         let response:iresult = {
+            error: false,
             code: 0,
-            data: undefined
+            message: undefined
         };
         if (key !== process.env.CLAIM_KEY){
-            response.code = 401;
-            response
+            response = {
+                error: true,
+                code: 401,
+                message: undefined
+            };
             return response;
         }
 

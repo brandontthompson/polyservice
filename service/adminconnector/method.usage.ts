@@ -18,9 +18,9 @@ export const info:imethod = {
     ],
     fnc: ((str: string) : iresult => {
         let response:iresult = {
+            error: false,
             code: 200,
-            data: str,
-            error: null,
+            message: str,
         };
 
         
