@@ -17,7 +17,8 @@
   "scripts": {
     "dev": "tsc && nodemon dist/index.js",
     "start": "tsc && node dist/index.js",
-    "test": "tsc && node dist/tests/index.js"
+    "test": "tsc && node dist/tests/index.js",
+    "dbug": "tsc && DEBUG=socket.io* node dist/tests/index.js"
   },
   "repository": {
     "type": "git",

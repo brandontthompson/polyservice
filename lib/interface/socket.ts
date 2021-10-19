@@ -1,13 +1,14 @@
 // import {} from "http"
-import { Server, Socket } from "socket.io";
+import { Namespace, Server, Socket } from "socket.io";
 import { imethod, iservice } from "../iservice";
 import { iinterface, IO } from "../iinterface";
 import { iresult } from "../iresult";
 import { HttpListener } from "../server";
+import { imiddleware } from "../imiddleware";
 
 let io:Server;
 const services:iservice[] = [];
-const mware:Function[] = [];
+const middlewares:imiddleware[][] = [];
 
 export const socket:iinterface = {
     identifier: IO.SOC,
@@ -37,8 +38,18 @@ function bind(service:iservice) {
  * @public
  * @param fnc 
  */
-function middleware(fnc:Function) {
-    mware.push(fnc);
+function middleware(middleware:imiddleware) {
+    let pushed = false;
+    for (let index = 0; index < middlewares.length; index++) {
+        if(middlewares[index][0].namespace === middleware.namespace){
+            middlewares[index].push(middleware);
+            pushed = true;
+            break;
+        }
+    }
+    if(!pushed){
+        middlewares.push([middleware]);
+    }
 }
 
 /**
@@ -56,29 +67,34 @@ function listen(){
 
     io = new Server(HttpListener.Instance.httpServer, {});
 
-    io.on('connection', function(soc:Socket) {
-        console.log("CONNECTED");
+
+    for (let index = 0; index < services.length; index++) {
+        const namespace = io.of(services[index].name.toLowerCase());
+        for (let index = 0; index < middlewares.length; index++) {
+            if(middlewares[index][0]?.namespace && (middlewares[index][0].namespace != services[index].name)) continue;
+            const nspace = middlewares[index][0]?.namespace ? namespace : io;
+            registerMiddleware(nspace, middlewares[index]);
+        };
         
-        registerListeners(soc);
-    });
+        namespace.on('connection', function(soc:Socket) {
+            services[index].method.forEach(function(method:imethod){
+                soc.on(method.alias.toUpperCase(), function(context:any){
+                    callback(soc, method, context);
+                }); 
+            });
+        });
+    }
 }
 
 /**
  * @private
- * @param soc 
+ * @param namespace 
+ * @param middlewares[]
  */
-function registerListeners(soc:Socket) {
-    mware.forEach(m => {
-        io.use(function (socket, next) {
-            wrap(m(socket.request, next));
-        });
-    });
-
-    for (let index = 0; index < services.length; index++) {
-        services[index].method.forEach(function(method:imethod){
-            soc.on(method.alias.toUpperCase(), function(context:any){
-                callback(soc, method, context);
-            }); 
+function registerMiddleware(namespace:Server | Namespace, middlewares:imiddleware[]){
+    for (let index = 0; index < middlewares.length; index++) {
+        namespace.use(function(socket, next) {
+            wrap(middlewares[index].fnc(socket.request, next));
         });
     }
 }

@@ -73,7 +73,7 @@ function init() {
 function use(middleware:imiddleware) {
     for (const [name, obj] of Object.entries(_interface.default)) {    
         if((middleware.interface & obj.identifier) === obj.identifier || (middleware.interface & IO.ALL) === IO.ALL){
-            obj.middleware(middleware.fnc);
+            obj.middleware(middleware);
         }
     }
 }
