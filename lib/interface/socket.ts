@@ -55,11 +55,11 @@ function middleware(middleware:imiddleware) {
 }
 
 /**
+ * wraps expressjs middleware functions for socketio
  * @private
  * @returns 
  */
  const wrap = (middleware: (arg0: any, arg1: {}, arg2: any) => any) => (socket: { request: any; }, next: any) => middleware(socket.request, {}, next);
-// const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
 
 /**
  * @private

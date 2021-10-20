@@ -65,7 +65,7 @@ function middleware(middleware:imiddleware){
  * @private
  * builds the URL for each service's method
  */
- function buildURL(serviceStr:string, method:imethod) {
+function buildURL(serviceStr:string, method:imethod) {
     let url = "/"+serviceStr+"/"+method.name;
 
     if(method.protect && method.protect.type === authType.PARAM)

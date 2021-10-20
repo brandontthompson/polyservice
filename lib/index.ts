@@ -12,12 +12,14 @@ interface iframework{
     bind:Function
     init:Function
     services:Function
+    middlewares:Function
 }
 
 /**
  * @private
  */
- let services:iservice[] = [];
+const services:iservice[] = [];
+const middlewares:imiddleware[] = [];
 
 /**
  * Module exports.
@@ -29,6 +31,7 @@ export const service:iframework = {
     bind: bind,
     init: init,
     services: getServices,
+    middlewares: getMiddlewares,
 };
 
 /**
@@ -39,6 +42,9 @@ function getServices():iservice[] {
     return [...services];
 }
 
+function getMiddlewares():imiddleware[] {
+    return [...middlewares];
+}
 
 /**
  * @public
@@ -57,7 +63,7 @@ function init() {
     for (let index = 0; index < services.length; index++) {
         for (const [name, obj] of Object.entries(_interface.default)) {           
             if((services[index].interface & obj.identifier) === obj.identifier || (services[index].interface & IO.ALL) === IO.ALL){
-                console.log("LOADED: " + obj.name);
+                console.log("LOADED: ", obj.name, services[index].name);
                 obj.init(services[index]);
             }
         }
@@ -74,6 +80,7 @@ function use(middleware:imiddleware) {
     for (const [name, obj] of Object.entries(_interface.default)) {    
         if((middleware.interface & obj.identifier) === obj.identifier || (middleware.interface & IO.ALL) === IO.ALL){
             obj.middleware(middleware);
+            middlewares.push(middleware);
         }
     }
 }
@@ -86,7 +93,7 @@ function bind() {
     for (let index = 0; index < services.length; index++) {
         for (const [iface, obj] of Object.entries(_interface.default)) {
             if((services[index].interface & obj.identifier) === obj.identifier || (services[index].interface & IO.ALL) === IO.ALL){
-                console.log("BOUND: " + obj.name);
+                console.log("BOUND: ", obj.name, services[index].name);
                 obj.bind(services[index]);
             }
         }        
