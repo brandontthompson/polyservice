@@ -1,4 +1,3 @@
-// import {} from "http"
 import { Namespace, Server, Socket } from "socket.io";
 import { imethod, iservice } from "../iservice";
 import { iinterface, IO } from "../iinterface";
@@ -6,9 +5,12 @@ import { iresult } from "../iresult";
 import { HttpListener } from "../server";
 import { imiddleware } from "../imiddleware";
 
+            // @TOOD: write exit and errors io events
+            // @TODO: expose an event system for for others to use or even just allow for callbacks for connection and disconnect
 let io:Server;
 const services:iservice[] = [];
 const middlewares:imiddleware[][] = [];
+const connected:Socket[] = [];
 
 export const socket:iinterface = {
     identifier: IO.SOC,
@@ -57,11 +59,11 @@ function middleware(middleware:imiddleware) {
  * @returns 
  */
  const wrap = (middleware: (arg0: any, arg1: {}, arg2: any) => any) => (socket: { request: any; }, next: any) => middleware(socket.request, {}, next);
+// const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
 
 /**
  * @private
  */
-
 function listen(){
     if(io !== null && io !== undefined) return io;
 
@@ -77,8 +79,9 @@ function listen(){
         };
         
         namespace.on('connection', function(soc:Socket) {
+            connected.push(soc);
             services[index].method.forEach(function(method:imethod){
-                soc.on(method.alias.toUpperCase(), function(context:any){
+                soc.on(method.name.toUpperCase(), function(context:any){
                     callback(soc, method, context);
                 }); 
             });
@@ -93,9 +96,7 @@ function listen(){
  */
 function registerMiddleware(namespace:Server | Namespace, middlewares:imiddleware[]){
     for (let index = 0; index < middlewares.length; index++) {
-        namespace.use(function(socket, next) {
-            wrap(middlewares[index].fnc(socket.request, next));
-        });
+        namespace.use(wrap(middlewares[index].fnc()));
     }
 }
 
@@ -111,6 +112,7 @@ function callback(soc:Socket, method:imethod, context:any) {
     if(result.error){
         return soc.emit('SOCKET_ERROR', result);
     }
-    return soc.emit(method.alias.toUpperCase(), result);
+    
+    return soc.emit(method.name.toUpperCase(), result);
 }
 

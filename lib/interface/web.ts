@@ -10,8 +10,6 @@ const app = express();
 const router = Router();
 const middlewares:imiddleware[][] = [];
 
-// @TODO: add dotenv variables for ports and such
-// @TODO: middlware functions and protections for URLs
 export const web: iinterface = {
     identifier: IO.WEB,
     name: "web",
@@ -24,7 +22,7 @@ function init() {
     app.use(express.urlencoded({extended:false}));
     app.use(express.json());
 
-    app.use("/api",router);
+    app.use("/"+process.env.API_BASE,router);
 
     HttpListener.app = app;
 }
@@ -60,20 +58,7 @@ function bind(service:iservice) {
 
 
 function middleware(middleware:imiddleware){
-    //@TODO: namespace check
-    let pushed = false;
-    for (let index = 0; index < middlewares.length; index++) {
-        if(middlewares[index][0].namespace === middleware.namespace){
-            middlewares[index].push(middleware);
-            pushed = true;
-            break;
-        }
-    }
-    if(!pushed){
-        middlewares.push([middleware]);
-    }
-
-    app.use(middleware.fnc());
+    middleware.namespace ? app.use("/"+process.env.API_BASE+"/"+middleware.namespace, middleware.fnc()) : app.use(middleware.fnc());
 }
 
 /**
