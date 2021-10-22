@@ -36,6 +36,7 @@ function bind(service:iservice) {
         if(method.protect != undefined && method.protect != null)
         {
             const protection:iauth = method.protect;
+            
             router.use(url, (async(req, res, next) => { 
                 if(await protect(protection, { service: { name: service.name, id:index, },  body:req.body, headers:req.headers, param:req.params, query:req.query })) 
                     return next();

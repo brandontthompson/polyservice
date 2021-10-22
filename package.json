@@ -1,5 +1,5 @@
 {
-  "name": "@brandonthompson/service",
+  "name": "@brandontthompson/service",
   "description": "framework for microservices",
   "version": "1.0.0",
   "main": "./dist/index.js",
@@ -19,6 +19,9 @@
     "start": "tsc && node dist/index.js",
     "test": "tsc && node dist/tests/index.js",
     "dbug": "tsc && DEBUG=socket.io* node dist/tests/index.js"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "repository": {
     "type": "git",

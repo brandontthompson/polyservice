@@ -1,6 +1,7 @@
 node_modules/
 .node_modules/
 .env
+.npmrc
 built/*
 dist/
 tests/cases/rwc/*

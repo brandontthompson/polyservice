@@ -38,5 +38,5 @@ export async function protect(auth:iauth, obj:any):Promise<boolean> {
     if(key === undefined && key === null)
         return false;
 
-    return await auth.fnc(key, obj.service);
+    return await auth.fnc(key, obj);
 }
