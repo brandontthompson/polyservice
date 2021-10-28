@@ -106,3 +106,11 @@ async function resolver(req:any, res:any, method:imethod) {
 
     return res.status(result.code).send(JSON.stringify(result));
 }
+
+function parseJSON(str:string){
+    try {
+        return JSON.parse(str);
+    } catch (error) {
+        return "";
+    }
+}
