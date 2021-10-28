@@ -8,13 +8,9 @@ const print2:imethod = {
     //     type: authType.BEARER,
     //     fnc: oauth,
     // },
-    alias: "prnt",
-    desc: "print the variable",
     args: [
         {
             name: "value",
-            alias: "",
-            desc: "",
             type: "string",
             format: format.PARAM,
         },
