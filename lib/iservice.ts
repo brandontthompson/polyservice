@@ -2,8 +2,8 @@ import { IO } from "./iinterface";
 
 export interface iarg{
     name: string
-    alias: string
-    desc: string
+    alias?: string
+    desc?: string
     type: string
     format: format
 }
@@ -32,8 +32,8 @@ export interface imethod{
     name: string
     protect?: iauth
     request: string
-    alias: string
-    desc: string
+    alias?: string
+    desc?: string
     args: iarg[]
     fnc: Function
 }
