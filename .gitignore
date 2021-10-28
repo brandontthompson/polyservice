@@ -76,6 +76,7 @@ internal/
 yarn.lock
 yarn-error.log
 .parallelperf.*
+tests
 tests/cases/user/*/package-lock.json
 tests/cases/user/*/node_modules/
 tests/cases/user/*/**/*.js

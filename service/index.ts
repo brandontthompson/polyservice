@@ -1,1 +1,0 @@
-export { adminconnector } from "./adminconnector/service.adminconnector";
