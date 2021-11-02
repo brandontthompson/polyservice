@@ -4,6 +4,7 @@ export interface iarg{
     name: string
     alias?: string
     desc?: string
+    optional?: boolean
     type: string
     format: format
 }

@@ -20,8 +20,16 @@ export const print:imethod = {
             type: "string",
             format: format.PARAM,
         },
+        {
+            name: "optional",
+            optional: true,
+            type: "string",
+            format: format.JSON,
+        },
     ],
-    fnc: ((str: string) : iresult => {
+    fnc: ((str: string, optional:any) : iresult => {
+        console.log(optional);
+        
         let response:iresult = {
             error:false,
             code: 200,

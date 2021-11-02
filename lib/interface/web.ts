@@ -91,7 +91,7 @@ async function resolver(req:any, res:any, method:imethod) {
         // @TODO: add the rest of the format options
 
         // param type checking
-        if(typeof param[index] != method.args[index].type)
+        if(typeof param[index] != method.args[index].type && (method.args[index].optional !== undefined && !method.args[index].optional))
             return res.status(400).end();
     }
 
