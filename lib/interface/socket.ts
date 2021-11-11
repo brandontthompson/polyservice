@@ -5,8 +5,8 @@ import { iresult } from "../iresult";
 import { HttpListener } from "../server";
 import { imiddleware } from "../imiddleware";
 
-            // @TOOD: write exit and errors io events
-            // @TODO: expose an event system for for others to use or even just allow for callbacks for connection and disconnect
+// @TOOD: write exit and errors io events
+// @TODO: expose an event system for for others to use or even just allow for callbacks for connection and disconnect
 let io:Server;
 const services:iservice[] = [];
 const middlewares:imiddleware[][] = [];
@@ -71,7 +71,7 @@ function listen(){
 
 
     for (let index = 0; index < services.length; index++) {
-        const namespace = io.of(services[index].name.toLowerCase());
+        const namespace = io.of(services[index].name.toLowerCase() + ((services[index].version) ? "/" + services[index].version?.toLowerCase() : ""));
         for (let index = 0; index < middlewares.length; index++) {
             if(middlewares[index][0]?.namespace && (middlewares[index][0].namespace != services[index].name)) continue;
             const nspace = middlewares[index][0]?.namespace ? namespace : io;

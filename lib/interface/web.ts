@@ -31,7 +31,7 @@ function bind(service:iservice) {
 
     service.method.forEach((method, index)=> {
 
-        const url = buildURL(service.name, method);
+        const url = buildURL(service, method);
         
         if(method.protect != undefined && method.protect != null)
         {
@@ -53,7 +53,7 @@ function bind(service:iservice) {
         else if(method.request.toLowerCase() === "put")
             router.put(url, function(req:any, res:any) { resolver(req, res, method); });    
         else if(method.request.toLowerCase() === "delete")
-            router.delete(url, function(req:any, res:any) { resolver(req, res, method); });  
+            router.delete(url, function(req:any, res:any) { resolver(req, res, method); });          
     });
 }
 
@@ -66,8 +66,8 @@ function middleware(middleware:imiddleware){
  * @private
  * builds the URL for each service's method
  */
-function buildURL(serviceStr:string, method:imethod) {
-    let url = "/"+serviceStr+"/"+method.name;
+function buildURL(service:iservice, method:imethod) {
+    let url = "/" +service.name+"/" + ((service.version) ? service.version + "/" : "") + method.name;
 
     if(method.protect && method.protect.type === authType.PARAM)
         url +=  "/:"+method.protect.key;
@@ -75,7 +75,7 @@ function buildURL(serviceStr:string, method:imethod) {
     method.args.forEach(arg => {
         if(arg.format === format.PARAM)
             url += "/:"+arg.name;
-    });
+    });    
     return url;
 }
 

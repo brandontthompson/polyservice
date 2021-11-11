@@ -27,7 +27,6 @@ export enum authType{
     QUERY_PARAM,
 }
 
-
 export interface imethod{
     interface?: IO
     name: string
@@ -45,15 +44,14 @@ export interface iauth{
     fnc: Function
 }
 
-// @TODO: add option for interface toggles
-// expose the interface IO flags so you can have a service not work with 
-// some interfaces
-// also maybe expand out so we can have methods that are only allowed on some interfaces
+// @TODO
+// expand out so we can have methods that are only allowed on some interfaces
 // example iserice: IO.MIXED/IO.METHOD
 // imethod: IO.cli, IO.web... etc
 
 export interface iservice{
     interface: IO
+    version?: string,
     name: string
     method: imethod[]
 }

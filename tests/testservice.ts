@@ -45,7 +45,8 @@ const postPrint:imethod = {
 
 export const test:iservice = {
     name: "testservice",
+    version: "v2",
     method: [print, print2, postPrint],
-    // interface: IO.WEB | IO.SOC,
-    interface: IO.WEB,
+    interface: IO.WEB | IO.SOC,
+    // interface: IO.WEB,
 }
