@@ -72,6 +72,7 @@ HTTP_CERT= // path to https cert - if set httplistener will attempt to use https
 HTTP_KEY= // path to https key - if set httplistener will attempt to use https
 
 ## example entry point
+```
 import { service } from '../index';
 (() => {
     service.register(require('./testservice').test);
@@ -80,9 +81,9 @@ import { service } from '../index';
 
 })();
 
-
+```
 ## example service
-
+```
 const postPrint:imethod = {
     name: "print",
     request: "POST",
@@ -146,7 +147,7 @@ export const test:iservice = {
     interface: IO.WEB | IO.SOC,
     // interface: IO.WEB,
 }
-
+```
 ## Future plans
 
 ### general
