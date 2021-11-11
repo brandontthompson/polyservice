@@ -12,6 +12,8 @@ This framework is still under construction
 * 
 
 ## interfaces
+```
+
 export interface iarg{
     name: string
     alias?: string
@@ -62,7 +64,7 @@ export interface iservice{
     name: string
     method: imethod[]
 }
-
+```
 
 ## Env variables 
 
