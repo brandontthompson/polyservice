@@ -3,7 +3,7 @@ import { IO } from "./iinterface";
 export enum executeOrder{
     PRE = 1 << 0,
     POST = 1 << 1,
-    BOTH = ~(~1 << 2),
+    BOTH = ~(~0 << 2),
 }
 
 export interface imiddleware{

@@ -94,6 +94,9 @@ function bind() {
         for (const [iface, obj] of Object.entries(_interface.default)) {
             if((services[index].interface & obj.identifier) === obj.identifier || (services[index].interface & IO.ALL) === IO.ALL){
                 console.log("BOUND: ", obj.name, services[index].name);
+                services[index].method.forEach(method => {
+                    if(method.protect && !method.protect.key) method.protect.key = "Key"
+                });
                 obj.bind(services[index]);
             }
         }        
