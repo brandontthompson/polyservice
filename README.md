@@ -67,12 +67,12 @@ export interface iservice{
 ```
 
 ## Env variables 
-
+```
 API_BASE=api // used to build the url for web io
 HTTP_PORT=3000 // web port for sock and http
 HTTP_CERT= // path to https cert - if set httplistener will attempt to use https
 HTTP_KEY= // path to https key - if set httplistener will attempt to use https
-
+```
 ## example entry point
 ```
 import { service } from '../index';
