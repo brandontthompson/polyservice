@@ -41,8 +41,12 @@ function bind(service:iservice) {
                 // @TODO: generalize this so we dont leave it up to the interfaces to define the bitshifting for the services
                 // TODO: make this so it will pass a context variable, this way we can pass info from the jwt to our functions and use that information
                 const context = await protect(protection, { service: { name: service.name, id:1 << index, },  body:req.body, headers:req.headers, param:req.params, query:req.query })
+
                 if(context)
-                    return next(context);
+                {
+                    res.locals.context = context
+                    return next();
+                }
                 return res.status(401).end();
          }));
         }
@@ -102,7 +106,7 @@ async function resolver(req:any, res:any, method:imethod) {
         return res.status(400).end();
 
     
-    const result:iresult = await method.fnc(...param);
+    const result:iresult = await method.fnc(...param, res.locals.context);
 
     if(result.error !== undefined && result.error !== null)
         return res.status(result.code).send(result);
