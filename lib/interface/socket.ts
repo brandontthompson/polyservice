@@ -72,10 +72,10 @@ function listen(){
 
     for (let index = 0; index < services.length; index++) {
         const namespace = io.of(services[index].name.toLowerCase() + ((services[index].version) ? "/" + services[index].version?.toLowerCase() : ""));
-        for (let index = 0; index < middlewares.length; index++) {
-            if(middlewares[index][0]?.namespace && (middlewares[index][0].namespace != services[index].name)) continue;
-            const nspace = middlewares[index][0]?.namespace ? namespace : io;
-            registerMiddleware(nspace, middlewares[index]);
+        for (let subdex = 0; subdex < middlewares.length; subdex++) {
+            if(middlewares[subdex][0]?.namespace !== undefined && (middlewares[subdex][0].namespace != services[index].name)) continue;
+            const nspace = middlewares[subdex][0]?.namespace ? namespace : io;
+            registerMiddleware(nspace, middlewares[subdex]);
         };
         
         namespace.on('connection', function(soc:Socket) {
@@ -96,7 +96,7 @@ function listen(){
  */
 function registerMiddleware(namespace:Server | Namespace, middlewares:imiddleware[]){
     for (let index = 0; index < middlewares.length; index++) {
-        namespace.use(wrap(middlewares[index].fnc()));
+        // namespace.use(wrap(middlewares[index].fnc));
     }
 }
 

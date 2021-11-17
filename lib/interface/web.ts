@@ -19,9 +19,6 @@ export const web: iinterface = {
 };
 
 function init() {
-    app.use(express.urlencoded({extended:false}));
-    app.use(express.json());
-
     app.use("/"+process.env.API_BASE,router);
 
     HttpListener.app = app;
@@ -65,8 +62,8 @@ function bind(service:iservice) {
 }
 
 
-function middleware(middleware:imiddleware){
-    middleware.namespace ? app.use("/"+process.env.API_BASE+"/"+middleware.namespace, middleware.fnc()) : app.use(middleware.fnc());
+function middleware(middleware:imiddleware| any){      
+    middleware.namespace ? app.use("/"+process.env.API_BASE+"/"+middleware.namespace, middleware.fnc) : app.use(middleware.fnc);
 }
 
 /**
@@ -90,11 +87,13 @@ async function resolver(req:any, res:any, method:imethod) {
     const param:any[] = [];
 
     for (let index = 0; index < method.args.length; index++) {
-        // @TODO: catch invalid json https://stackoverflow.com/questions/29797946/handling-bad-json-parse-in-node-safely
         if(method.args[index].format === format.PARAM) 
             param.push(req.params[method.args[index].name]);
-        else if(method.args[index].format === format.JSON || method.args[index].format === format.XML) 
+        else if(method.args[index].format === format.JSON || method.args[index].format === format.XML){
             param.push(req.body[method.args[index].name]);
+        }
+        else if (method.args[index].format === format.HTML){}
+        else if (method.args[index].format === format.DOC){}
         // @TODO: add the rest of the format options
 
         // param type checking    
@@ -112,12 +111,4 @@ async function resolver(req:any, res:any, method:imethod) {
         return res.status(result.code).send(result);
 
     return res.status(result.code).send(JSON.stringify(result));
-}
-
-function parseJSON(str:string){
-    try {
-        return JSON.parse(str);
-    } catch (error) {
-        return "";
-    }
 }

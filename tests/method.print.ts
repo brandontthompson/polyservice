@@ -6,7 +6,7 @@ export const print:imethod = {
     protect: {
         type: authType.BEARER,
         fnc: ((key:string, obj:any) => {
-            console.log(key, obj);
+            // console.log(key, obj);
             return true;
         }),
     },

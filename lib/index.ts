@@ -76,8 +76,16 @@ function init() {
  * @public
  * @param middleware
  */
-function use(middleware:imiddleware) {
+function use(middleware:imiddleware|any) {
     for (const [name, obj] of Object.entries(_interface.default)) {    
+
+        // if a non imiddleware is passed (express package middleware) then create an imiddlware
+        if(!("fnc" in (middleware as any)))
+            middleware = {
+                interface: IO.ALL,
+                fnc: middleware
+            }
+
         if((middleware.interface & obj.identifier) === obj.identifier || (middleware.interface & IO.ALL) === IO.ALL){
             obj.middleware(middleware);
             middlewares.push(middleware);
