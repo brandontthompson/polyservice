@@ -39,8 +39,10 @@ function bind(service:iservice) {
             
             router.use(url, (async(req, res, next) => { 
                 // @TODO: generalize this so we dont leave it up to the interfaces to define the bitshifting for the services
-                if(await protect(protection, { service: { name: service.name, id:1 << index, },  body:req.body, headers:req.headers, param:req.params, query:req.query })) 
-                    return next();
+                // TODO: make this so it will pass a context variable, this way we can pass info from the jwt to our functions and use that information
+                const context = await protect(protection, { service: { name: service.name, id:1 << index, },  body:req.body, headers:req.headers, param:req.params, query:req.query })
+                if(context)
+                    return next(context);
                 return res.status(401).end();
          }));
         }
@@ -91,8 +93,8 @@ async function resolver(req:any, res:any, method:imethod) {
             param.push(req.body[method.args[index].name]);
         // @TODO: add the rest of the format options
 
-        // param type checking
-        if(typeof param[index] != method.args[index].type && (method.args[index].optional !== undefined && !method.args[index].optional))
+        // param type checking    
+        if(typeof param[index] != method.args[index].type && !method.args[index].optional)
             return res.status(400).end();
     }
 

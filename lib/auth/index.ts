@@ -2,6 +2,7 @@ import { authType, iauth } from "../iservice";
 
 export async function protect(auth:iauth, obj:any):Promise<boolean> {       
     let key:any;
+    
     switch(auth.type){
         case(authType.BASIC):{
             key = (Buffer.from(obj.headers["authorization"], 'base64').toString('binary')).split("Basic ")[1].trim();
