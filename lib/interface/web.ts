@@ -8,7 +8,7 @@ import { imiddleware } from "../imiddleware";
 
 const app = express();
 const router = Router();
-const middlewares:imiddleware[][] = [];
+const middlewares:any[] = [];
 
 export const web: iinterface = {
     identifier: IO.WEB,
@@ -26,25 +26,33 @@ function init() {
 
 function bind(service:iservice) {
 
+    // setup the context so we can user it later
+    app.use((req:any, res:any, next:Function) => {
+        if(!res.locals.context) res.locals.context = {}; 
+        return next();
+    });
+
+    for (let index = 0; index < middlewares.length; index++) {
+        const middleware:imiddleware | any = middlewares[index];
+        middleware.namespace ? app.use("/"+process.env.API_BASE+"/"+middleware.namespace, middleware.fnc) : app.use(middleware.fnc);   
+    }
+
     service.method.forEach((method, index)=> {
 
         const url = buildURL(service, method);
         
-        if(method.protect != undefined && method.protect != null)
-        {
+        if(method.protect != undefined && method.protect != null){
             const protection:iauth = method.protect;
             
             router.use(url, (async(req, res, next) => { 
                 // @TODO: generalize this so we dont leave it up to the interfaces to define the bitshifting for the services
-                // TODO: make this so it will pass a context variable, this way we can pass info from the jwt to our functions and use that information
-                const context = await protect(protection, { service: { name: service.name, id:1 << index, },  body:req.body, headers:req.headers, param:req.params, query:req.query })
+                const protectContext = await protect(protection, { service: { name: service.name, id:1 << index, },  body:req.body, headers:req.headers, param:req.params, query:req.query })
 
-                if(context)
-                {
-                    res.locals.context = context
-                    return next();
-                }
-                return res.status(401).end();
+                if(!protectContext)                
+                    return res.status(401).end();
+
+                res.locals.context.protect = protectContext
+                return next();
          }));
         }
 
@@ -62,8 +70,8 @@ function bind(service:iservice) {
 }
 
 
-function middleware(middleware:imiddleware| any){      
-    middleware.namespace ? app.use("/"+process.env.API_BASE+"/"+middleware.namespace, middleware.fnc) : app.use(middleware.fnc);
+function middleware(middleware:imiddleware| any){
+    middlewares.push(middleware)
 }
 
 /**
@@ -83,7 +91,8 @@ function buildURL(service:iservice, method:imethod) {
     return url;
 }
 
-async function resolver(req:any, res:any, method:imethod) {    
+async function resolver(req:any, res:any, method:imethod) {   
+
     const param:any[] = [];
 
     for (let index = 0; index < method.args.length; index++) {
@@ -106,6 +115,7 @@ async function resolver(req:any, res:any, method:imethod) {
 
     
     const result:iresult = await method.fnc(...param, res.locals.context);
+    res.locals.context = null;    
 
     if(result.error !== undefined && result.error !== null)
         return res.status(result.code).send(result);

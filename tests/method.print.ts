@@ -27,8 +27,8 @@ export const print:imethod = {
             format: format.JSON,
         },
     ],
-    fnc: ((str: string, optional:any) : iresult => {
-        console.log(optional);
+    fnc: ((str: string, optional:any, context:any) : iresult => {
+        console.log(optional, context);
         
         let response:iresult = {
             error:false,

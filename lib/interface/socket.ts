@@ -9,7 +9,7 @@ import { imiddleware } from "../imiddleware";
 // @TODO: expose an event system for for others to use or even just allow for callbacks for connection and disconnect
 let io:Server;
 const services:iservice[] = [];
-const middlewares:imiddleware[][] = [];
+const middlewares:any[][] = [];
 const connected:Socket[] = [];
 
 export const socket:iinterface = {
@@ -68,7 +68,6 @@ function listen(){
     if(io !== null && io !== undefined) return io;
 
     io = new Server(HttpListener.Instance.httpServer, {});
-
 
     for (let index = 0; index < services.length; index++) {
         const namespace = io.of(services[index].name.toLowerCase() + ((services[index].version) ? "/" + services[index].version?.toLowerCase() : ""));
