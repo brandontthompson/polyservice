@@ -8,7 +8,7 @@ import { imiddleware } from "../imiddleware";
 
 const app = express();
 const router = Router();
-const middlewares:any[] = [];
+const middlewares:imiddleware[] = [];
 
 export const web: iinterface = {
     identifier: IO.WEB,
@@ -31,6 +31,9 @@ function bind(service:iservice) {
         if(!res.locals.context) res.locals.context = {}; 
         return next();
     });
+
+    app.use(express.urlencoded({extended:false}));
+    app.use(express.json());
 
     for (let index = 0; index < middlewares.length; index++) {
         const middleware:imiddleware | any = middlewares[index];
@@ -70,7 +73,7 @@ function bind(service:iservice) {
 }
 
 
-function middleware(middleware:imiddleware| any){
+function middleware(middleware:imiddleware){
     middlewares.push(middleware)
 }
 

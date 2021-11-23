@@ -9,7 +9,7 @@ import { imiddleware } from "../imiddleware";
 // @TODO: expose an event system for for others to use or even just allow for callbacks for connection and disconnect
 let io:Server;
 const services:iservice[] = [];
-const middlewares:any[][] = [];
+const middlewares:imiddleware[][] = [];
 const connected:Socket[] = [];
 
 export const socket:iinterface = {
