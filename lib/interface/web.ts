@@ -108,7 +108,8 @@ async function resolver(req:any, res:any, method:imethod) {
         else if (method.args[index].format === format.DOC){}
         // @TODO: add the rest of the format options
 
-        // param type checking    
+        // param type checking
+        // if((typeof param[index] === "object" && method.args[index].type === "object") && )
         if(typeof param[index] != method.args[index].type && !method.args[index].optional)
             return res.status(400).end();
     }
@@ -120,8 +121,11 @@ async function resolver(req:any, res:any, method:imethod) {
     const result:iresult = await method.fnc(...param, res.locals.context);
     res.locals.context = null;    
 
-    if(result.error !== undefined && result.error !== null)
-        return res.status(result.code).send(result);
+    //@TODO: rework for multiple types, use enum not strings
+    if(result.type !== undefined) res.type(result.type);
 
-    return res.status(result.code).send(JSON.stringify(result));
+    if(result.error)
+        return res.status(result.code).send(result);
+    
+    return res.status(result.code).send((result.type !== undefined) ? result.message : JSON.stringify(result));
 }

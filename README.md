@@ -135,7 +135,8 @@ const print:imethod = {
         let response:iresult = {
             error:false,
             code: 200,
-            message:str
+            message:str,
+            //type: "application/xml"
         };
 
         return response;
