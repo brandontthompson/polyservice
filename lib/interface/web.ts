@@ -49,7 +49,8 @@ function bind(service:iservice) {
             
             router.use(url, (async(req, res, next) => { 
                 // @TODO: generalize this so we dont leave it up to the interfaces to define the bitshifting for the services
-                const protectContext = await protect(protection, { service: { name: service.name, id:1 << index, },  body:req.body, headers:req.headers, param:req.params, query:req.query })
+                // const protectContext = await protect(protection, { service: { name: service.name, id:1 << index, },  body:req.body, headers:req.headers, param:req.params, query:req.query })
+                const protectContext = await protect(protection, { service: { name: service.name, id:1 << index, },  req })
 
                 if(!protectContext)                
                     return res.status(401).end();

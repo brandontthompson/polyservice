@@ -21,6 +21,7 @@ export enum authType{
     BASIC,
     BEARER,
     BODY,
+    CUSTOM,
     HEADER,
     OAUTH2,
     PARAM,

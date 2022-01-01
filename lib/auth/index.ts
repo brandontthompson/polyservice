@@ -15,11 +15,14 @@ export async function protect(auth:iauth, obj:any):Promise<boolean> {
             break;
         }
         case(authType.BODY):{
-            key = obj.body[auth.key || "Key"];
+            key = obj.req.body[auth.key || "Key"];
             break;
         }
+        case(authType.CUSTOM):{
+            break;   
+        }
         case(authType.HEADER):{
-            key = obj.headers[auth.key || "Key"];
+            key = obj.req.headers[auth.key || "Key"];
             break;
         }
         case(authType.OAUTH2):{
@@ -27,11 +30,11 @@ export async function protect(auth:iauth, obj:any):Promise<boolean> {
             break;
         }
         case(authType.PARAM):{
-            key = obj.param[auth.key || "Key"];
+            key = obj.req.param[auth.key || "Key"];
             break;
         }
         case(authType.QUERY_PARAM):{
-            key = obj.query[auth.key || "Key"];
+            key = obj.req.query[auth.key || "Key"];
             break;
         }
     }
