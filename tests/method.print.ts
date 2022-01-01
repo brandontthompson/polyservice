@@ -4,8 +4,10 @@ export const print:imethod = {
     name: "print",
     request: "GET",
     protect: {
-        type: authType.BEARER,
+        type: authType.PARAM,
         fnc: ((key:string, obj:any) => {
+            console.log("AA", key);
+            
             // console.log(key, obj);
             return true;
         }),

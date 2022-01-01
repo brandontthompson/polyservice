@@ -5,4 +5,6 @@ export interface iresult{
     code: number
     message: any
     type?: string
+    redirect?: string
+    forward?: string
 }

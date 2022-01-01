@@ -2,14 +2,14 @@ import { authType, iauth } from "../iservice";
 
 export async function protect(auth:iauth, obj:any):Promise<boolean> {       
     let key:any;
-    
+        
     switch(auth.type){
         case(authType.BASIC):{
-            key = (Buffer.from(obj.headers["authorization"], 'base64').toString('binary')).split("Basic ")[1].trim();
+            key = (Buffer.from(obj.req.headers["authorization"], 'base64').toString('binary')).split("Basic ")[1].trim();
             break;
         }
         case(authType.BEARER):{
-            const bearer = obj.headers["authorization"]
+            const bearer = obj.req.headers["authorization"]
             if(!bearer || !bearer.startsWith("Bearer ")) return false;
             key = bearer.split("Bearer ")[1].trim();
             break;
@@ -30,7 +30,7 @@ export async function protect(auth:iauth, obj:any):Promise<boolean> {
             break;
         }
         case(authType.PARAM):{
-            key = obj.req.param[auth.key || "Key"];
+            key = obj.req.params[auth.key || "Key"];
             break;
         }
         case(authType.QUERY_PARAM):{
