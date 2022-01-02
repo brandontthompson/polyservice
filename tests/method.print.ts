@@ -33,6 +33,10 @@ export const print:imethod = {
         console.log(optional, context);
         str = str;
         context.store = { passedStr: str }
+        context.storeopts = {
+            path: "/api/testservice/v2/print",
+            maxAge: 360000
+        }
         let response:iresult = {
             error:false,
             code: 200,
