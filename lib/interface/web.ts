@@ -120,11 +120,11 @@ async function resolver(req:any, res:any, method:imethod) {
 
     
     const result:iresult = await method.fnc(...param, res.locals.context);
-    // @TODO: add options to store/set expire time
+    
     if(res.locals.context.store)
         for (let index = 0; index < Object.entries(res.locals.context.store).length; index++) {
             const element = Object.entries(res.locals.context.store)[index];
-            res.cookie(element[0], element[1]);
+            res.cookie(element[0], element[1], res.locals.context?.storeopts);           
         }
     res.locals.context = null;    
 
