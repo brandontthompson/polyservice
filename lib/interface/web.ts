@@ -123,7 +123,7 @@ async function resolver(req:any, res:any, method:imethod) {
     res.locals.context = null;    
 
     // @TODO: add support for redirecting and making requests
-    if(result.redirect) res.redirect(result.redirect);
+    if(result.redirect) return res.redirect(result.code || 302, result.redirect);
     //@TODO: rework for multiple types, use enum not strings
     if(result.type !== undefined) res.type(result.type);
 
