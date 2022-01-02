@@ -31,7 +31,8 @@ export const print:imethod = {
     ],
     fnc: ((str: string, optional:any, context:any) : iresult => {
         console.log(optional, context);
-        str = "<data><str>"+str+"</str></data>";
+        str = str;
+        context.store = { passedStr: str }
         let response:iresult = {
             error:false,
             code: 200,
