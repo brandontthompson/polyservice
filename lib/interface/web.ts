@@ -120,6 +120,8 @@ async function resolver(req:any, res:any, method:imethod) {
 
     
     const result:iresult = await method.fnc(...param, res.locals.context);
+
+    if(!result) res.status(500).end();
     
     if(res.locals.context.store)
         for (let index = 0; index < Object.entries(res.locals.context.store).length; index++) {
