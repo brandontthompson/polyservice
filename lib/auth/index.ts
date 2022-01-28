@@ -35,14 +35,14 @@ export async function protect(auth:iauth, obj:any):Promise<boolean> {
         }
         case(authType.PARAM_AUTHORIZATION):{
             key = {
-                param: obj.req.headers[auth.key || "Key"],
+                param: obj.req.params[auth.key || "Key"],
                 authorization: obj.req.headers["authorization"],
             }
             break;   
         }
         case(authType.PARAM_BODY):{
             key = {
-                param: obj.req.headers[auth.key || "Key"],
+                param: obj.req.params[auth.key || "Key"],
                 body: obj.req.body[auth.key || "Key"],
             }
             break;   
