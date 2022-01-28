@@ -25,6 +25,8 @@ export enum authType{
     HEADER,
     OAUTH2,
     PARAM,
+    PARAM_AUTHORIZATION,
+    PARAM_BODY,
     QUERY_PARAM,
 }
 
@@ -41,7 +43,7 @@ export interface imethod{
 
 export interface iauth{
     type: authType
-    key?: string
+    key?: string|any
     fnc: Function
 }
 

@@ -33,6 +33,20 @@ export async function protect(auth:iauth, obj:any):Promise<boolean> {
             key = obj.req.params[auth.key || "Key"];
             break;
         }
+        case(authType.PARAM_AUTHORIZATION):{
+            key = {
+                param: obj.req.headers[auth.key || "Key"],
+                headers: obj.req.headers["authorization"],
+            }
+            break;   
+        }
+        case(authType.PARAM_BODY):{
+            key = {
+                param: obj.req.headers[auth.key || "Key"],
+                headers: obj.req.body[auth.key || "Key"],
+            }
+            break;   
+        }
         case(authType.QUERY_PARAM):{
             key = obj.req.query[auth.key || "Key"];
             break;
