@@ -85,7 +85,7 @@ function middleware(middleware:imiddleware){
 function buildURL(service:iservice, method:imethod) {
     let url = "/" +service.name+"/" + ((service.version) ? service.version + "/" : "") + method.name;
     
-    if(method.protect && method.protect.type === authType.PARAM)
+    if(method.protect && method.protect.type === authType.PARAM || method.protect && method.protect.type === authType.PARAM_AUTHORIZATION || method.protect && method.protect.type === authType.PARAM_BODY)
         url +=  "/:"+method.protect.key;
 
     method.args.forEach(arg => {
