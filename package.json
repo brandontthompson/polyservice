@@ -1,7 +1,7 @@
 {
   "name": "@brandontthompson/service",
   "description": "framework for microservices",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
