@@ -85,7 +85,7 @@ function middleware(middleware:imiddleware){
 function buildURL(service:iservice, method:imethod) {
     let url = "/" +service.name+"/" + ((service.version) ? service.version + "/" : "") + method.name;
     
-    if(method.protect && method.protect.type === authType.PARAM || method.protect && method.protect.type === authType.PARAM_AUTHORIZATION || method.protect && method.protect.type === authType.PARAM_BODY)
+    if((method.protect && method.protect.type === authType.PARAM )|| (method.protect && method.protect.type === authType.PARAM_AUTHORIZATION )|| (method.protect && method.protect.type === authType.PARAM_BODY))
         url +=  "/:"+method.protect.key;
 
     method.args.forEach(arg => {
@@ -133,7 +133,8 @@ async function resolver(req:any, res:any, method:imethod) {
     // @TODO: add support for redirecting and making requests
     if(result.redirect) return res.redirect(result.code || 302, result.redirect);
     //@TODO: rework for multiple types, use enum not strings
-    if(result.type !== undefined) res.type(result.type);
+    res.type(result.type || "application/json");
+    // if(result.type !== undefined) res.type(result.type || "application/json");
 
     if(result.error)
         return res.status(result.code).send(result);
