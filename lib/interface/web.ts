@@ -105,8 +105,10 @@ async function resolver(req:any, res:any, method:imethod) {
         else if(method.args[index].format === format.JSON || method.args[index].format === format.XML){
             param.push(req.body[method.args[index].name]);
         }
-        else if (method.args[index].format === format.HTML){}
-        else if (method.args[index].format === format.DOC){}
+        else if (method.args[index].format === format.TEXT){}
+        else if (method.args[index].format === format.FILE){ 
+            param.push(req.files[method.args[index].name]) 
+        }
         // @TODO: add the rest of the format options
 
         // param type checking

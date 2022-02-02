@@ -13,8 +13,8 @@ export enum format{
     PARAM,
     JSON,
     XML,
-    HTML,
-    DOC,
+    TEXT,
+    FILE,
 }
 
 export enum authType{
