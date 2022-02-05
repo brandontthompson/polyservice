@@ -25,7 +25,7 @@ export const print:imethod = {
         {
             name: "optional",
             optional: true,
-            type: "string",
+            type: "object",
             format: format.JSON,
         },
     ],
