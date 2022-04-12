@@ -1,6 +1,6 @@
 import { Namespace, Server, Socket } from "socket.io";
 import { imethod, iservice } from "../iservice";
-import { iinterface, IO } from "../iinterface";
+import { iinterface } from "../iinterface";
 import { iresult } from "../iresult";
 import { HttpListener } from "../server";
 import { imiddleware } from "../imiddleware";
@@ -13,7 +13,7 @@ const middlewares:imiddleware[][] = [];
 const connected:Socket[] = [];
 
 export const socket:iinterface = {
-    identifier: IO.SOC,
+    identifier: "SOCKET",
     name: "socket",
     init: init,
     bind: bind,

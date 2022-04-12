@@ -1,4 +1,5 @@
 import { authType, format, iresult, imethod } from "../index";
+import { iparam } from "../iparam";
 
 export const print:imethod = {
     name: "print",
@@ -29,7 +30,7 @@ export const print:imethod = {
             format: format.JSON,
         },
     ],
-    fnc: ((str: string, optional:any, context:any) : iresult => {
+    fnc:  ((str:string, optional:object, context:any): iresult => {
         console.log(optional, context);
         str = str;
         context.store = { passedStr: str }

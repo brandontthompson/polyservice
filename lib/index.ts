@@ -2,7 +2,8 @@ import { iservice } from "./iservice";
 import * as _interface from "./interface";
 import { imiddleware } from "./imiddleware";
 import { HttpListener } from "./server";
-import { IO } from "./iinterface";
+import {iinterface, instanceOfInterface} from "./iinterface";
+
 /**
  * @private
  */
@@ -12,6 +13,7 @@ interface iframework{
     bind:Function
     init:Function
     services:Function
+    interfaces:Function
     middlewares:Function
 }
 
@@ -19,6 +21,7 @@ interface iframework{
  * @private
  */
 const services:iservice[] = [];
+const interfaces:iinterface[] = [];
 const middlewares:imiddleware[] = [];
 
 /**
@@ -31,12 +34,13 @@ export const service:iframework = {
     bind: bind,
     init: init,
     services: getServices,
+    interfaces: getInterfaces,
     middlewares: getMiddlewares,
 };
 
 /**
  * @public
- * @param module 
+ *
  */
 function getServices():iservice[] {
     return [...services];
@@ -46,12 +50,16 @@ function getMiddlewares():imiddleware[] {
     return [...middlewares];
 }
 
+function getInterfaces():iinterface[]{
+    return [...interfaces]
+}
+
 /**
  * @public
  * @param module 
  */
-function register(module:iservice) {
-    services[services.length] = module;
+function register(module:iservice | iinterface) {
+    (instanceOfInterface(module)) ? interfaces[interfaces.length] = module : services[services.length] = module;
 }
 
 /**
@@ -61,8 +69,9 @@ function init() {
     bind();
     console.log(`Loading ${services.length} service(s)...`)
     for (let index = 0; index < services.length; index++) {
-        for (const [name, obj] of Object.entries(_interface.default)) {           
-            if((services[index].interface & obj.identifier) === obj.identifier || (services[index].interface & IO.ALL) === IO.ALL){
+        for (const [name, obj] of Object.entries(_interface.default)) {
+            if(services[index].interface.includes(obj.identifier) || services[index].interface == "ALL"){
+            // if((services[index].interface & obj.identifier) === obj.identifier || (services[index].interface & IO.ALL) === IO.ALL){
                 console.log("LOADED: ", obj.name, services[index].name);
                 obj.init(services[index]);
             }
@@ -82,11 +91,11 @@ function use(middleware:imiddleware|any) {
         // if a non imiddleware is passed (express package middleware) then create an imiddlware
         if(!("fnc" in (middleware as any)))
             middleware = {
-                interface: IO.ALL,
+                interface: "ALL",
                 fnc: middleware
             }
-
-        if((middleware.interface & obj.identifier) === obj.identifier || (middleware.interface & IO.ALL) === IO.ALL){
+        if(middleware.interface.includes(obj.identifier) || middleware.interface == "ALL"){
+        // if((middleware.interface & obj.identifier) === obj.identifier || (middleware.interface & IO.ALL) === IO.ALL){
             obj.middleware(middleware);
             middlewares.push(middleware);
         }
@@ -100,9 +109,10 @@ function bind() {
     console.log(`Binding ${services.length} service(s)...`)
     for (let index = 0; index < services.length; index++) {
         for (const [iface, obj] of Object.entries(_interface.default)) {
-            if((services[index].interface & obj.identifier) === obj.identifier || (services[index].interface & IO.ALL) === IO.ALL){
+            if(services[index].interface.includes(obj.identifier) || services[index].interface == "ALL"){
+            // if((services[index].interface & obj.identifier) === obj.identifier || (services[index].interface & IO.ALL) === IO.ALL){
                 console.log("BOUND: ", obj.name, services[index].name);
-                services[index].method.forEach(method => {
+                services[index].method.forEach(method => {                   
                     if(method.protect && !method.protect.key) method.protect.key = "Key"
                 });
                 obj.bind(services[index]);

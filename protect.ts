@@ -1,4 +1,4 @@
-import { authType, iauth } from "../iservice";
+import { authType, iauth } from "./lib/iservice";
 
 export async function protect(auth:iauth, obj:any):Promise<boolean> {       
     let key:any;

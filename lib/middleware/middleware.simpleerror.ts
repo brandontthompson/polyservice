@@ -1,8 +1,8 @@
-import { IO } from "../iinterface";
+// import { IO } from "../iinterface";
 import { imiddleware } from "../imiddleware"
 
 export const simpleError:imiddleware = {
-    interface: IO.WEB,
+    interface: "WEB",
     fnc: function(err:SyntaxError, req:any, res:any, next:Function){  
         const e:any = err
         

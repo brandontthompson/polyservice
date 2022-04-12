@@ -1,11 +1,11 @@
 import yargs from "yargs";
 import { iservice } from "../iservice";
-import { iinterface, IO } from "../iinterface";
+import { iinterface } from "../iinterface";
 
 const argv = yargs(process.argv.slice(2))
 
 export const cli: iinterface = {
-    identifier: IO.CLI,
+    identifier: "COMMAND_LINE",
     name: "cli",
     init: initialize,
     bind: bind,

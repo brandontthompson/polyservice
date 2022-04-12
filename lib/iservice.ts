@@ -1,4 +1,4 @@
-import { IO } from "./iinterface";
+// import { IO } from "./iinterface";
 
 export interface iarg{
     name: string
@@ -31,15 +31,19 @@ export enum authType{
 }
 
 export interface imethod{
-    interface?: IO
+    interface?: string
     name: string
     protect?: iauth
     request: string
     alias?: string
     desc?: string
     args: iarg[]
-    fnc: Function
+    fnc(...args:any)
 }
+
+// export interface ipam{
+//     [param:string]:string
+// }
 
 export interface iauth{
     type: authType
@@ -53,7 +57,7 @@ export interface iauth{
 // imethod: IO.cli, IO.web... etc
 
 export interface iservice{
-    interface: IO
+    interface: string
     version?: string,
     name: string
     method: imethod[]
