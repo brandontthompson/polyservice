@@ -11,6 +11,7 @@ export interface iarg{
 
 export enum format{
     PARAM,
+    QUERY,
     JSON,
     XML,
     TEXT,
