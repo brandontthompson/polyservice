@@ -19,4 +19,3 @@ Polyservice includes the following IO capabilities
 ## Future plans
 This framework is still under development and you can track the progress with the link below
 https://trello.com/b/1WbULlke/polyservice
-
