@@ -9,6 +9,11 @@ export interface iarg{
     format: format
 }
 
+export interface methodArg {
+    [name:string]:any
+    type:string
+}
+
 export enum format{
     PARAM,
     QUERY,

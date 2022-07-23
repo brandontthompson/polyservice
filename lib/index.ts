@@ -62,6 +62,8 @@ function register(module:iservice | iinterface) {
     (instanceOfInterface(module)) ? interfaces[interfaces.length] = module : services[services.length] = module;
 }
 
+
+// @TODO: these loops can be optimized by how we register the services, for example if bucket all the services that need to be registerd with an IO then we can early exit the On^2 loop
 /**
  * @public
  */
@@ -69,12 +71,25 @@ function init() {
     bind();
     console.log(`Loading ${services.length} service(s)...`)
     for (let index = 0; index < services.length; index++) {
-        for (const [name, obj] of Object.entries(_interface.default)) {
+        // if(services[index].interface != "ALL"){
+        //     const obj = interfaces.find(({identifier}) =>  services[index].interface.includes(identifier))
+        //     obj.init(services[index]);
+        //     console.log("LOADED: ", obj.name, services[index].name);
+        // }
+        // else
+        //     for (const [name, obj] of Object.entries(interfaces)){
+        //         obj.init(services[index]);
+        //         console.log("LOADED: ", obj.name, services[index].name);
+        //     }
+        let addCnt:number = 0;
+        const target:number = (services[index].interface.split(" ")).length;
+        for (const [iterator, obj] of Object.entries(interfaces)) {
             if(services[index].interface.includes(obj.identifier) || services[index].interface == "ALL"){
-            // if((services[index].interface & obj.identifier) === obj.identifier || (services[index].interface & IO.ALL) === IO.ALL){
-                console.log("LOADED: ", obj.name, services[index].name);
                 obj.init(services[index]);
+                console.log("LOADED: ", obj.name, services[index].name);
+                addCnt++;
             }
+            if(parseInt(iterator) >= (interfaces.length - 1) && addCnt < target) console.log("FAILED TO LOAD ONE OR MORE SERVICE: ", services[index].interface, services[index].name)
         }
     }
     //@BUG: This will start an HTTP listener even if there is no interfaces tha require the HTTP server
@@ -95,7 +110,6 @@ function use(middleware:imiddleware|any) {
                 fnc: middleware
             }
         if(middleware.interface.includes(obj.identifier) || middleware.interface == "ALL"){
-        // if((middleware.interface & obj.identifier) === obj.identifier || (middleware.interface & IO.ALL) === IO.ALL){
             obj.middleware(middleware);
             middlewares.push(middleware);
         }
@@ -110,7 +124,6 @@ function bind() {
     for (let index = 0; index < services.length; index++) {
         for (const [iface, obj] of Object.entries(_interface.default)) {
             if(services[index].interface.includes(obj.identifier) || services[index].interface == "ALL"){
-            // if((services[index].interface & obj.identifier) === obj.identifier || (services[index].interface & IO.ALL) === IO.ALL){
                 console.log("BOUND: ", obj.name, services[index].name);
                 services[index].method.forEach(method => {                   
                     if(method.protect && !method.protect.key) method.protect.key = "Key"
