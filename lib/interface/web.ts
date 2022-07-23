@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { authType, format, iauth, imethod, iservice } from "../iservice";
+import { authType, format, iauth, imethod, iservice, methodArg } from "../iservice";
 import { iinterface } from "../iinterface";
 import { iresult } from "../iresult";
 import { HttpListener } from "../server";
@@ -102,12 +102,12 @@ function buildURL(service:iservice, method:imethod) {
 //     }
 // }
 
-class Foo{
-    static typeName(ctor: any) : string {
-        return ctor.name;
-    }
-}
-function asLiterals<T extends string>(arr: T[]): T[] { return arr; }
+// class Foo{
+//     static typeName(ctor: any) : string {
+//         return ctor.name;
+//     }
+// }
+// function asLiterals<T extends string>(arr: T[]): T[] { return arr; }
 async function resolver(req:any, res:any, method:imethod) {   
     
     // const args:string[] = Array.prototype.slice.call(method.fnc.arguments, 0, method.fnc.arguments.length);
@@ -116,28 +116,28 @@ async function resolver(req:any, res:any, method:imethod) {
     // const argTypes = args.map(e => typeof e); 
     // console.log(argTypes);       
 
-    const args = (f:any) => f.toString ().replace (/[\r\n\s]+/g, ' ').
-            match (/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/).
-            slice (1,3).
-            join ('').
-            split (/\s*,\s*/);
+    // const args = (f:any) => f.toString ().replace (/[\r\n\s]+/g, ' ').
+    //         match (/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/).
+    //         slice (1,3).
+    //         join ('').
+    //         split (/\s*,\s*/);
 
-    console.log(args(method.fnc));
+    // console.log(args(method.fnc));
 
-    const arg = args(method.fnc)
-    type T1 = Parameters<typeof method.fnc>
-    let a:T1;
-    for (let index = 0; index < arg.length; index++) {
-        type t = T1[0]
-        const element = arg[index];
-        (x:any): x is t => x.
-        console.log();
-    }
+    // const arg = args(method.fnc)
+    // type T1 = Parameters<typeof method.fnc>
+    // let a:T1;
+    // for (let index = 0; index < arg.length; index++) {
+    //     type t = T1[0]
+    //     const element = arg[index];
+    //     (x:any): x is t => x.
+    //     console.log();
+    // }
 
-    for (const param of args(method.fnc)) {
-        console.log( param);
+    // for (const param of args(method.fnc)) {
+    //     console.log( param);
 
-    }
+    // }
     
     // const tuple = <T extends any[], N extends 
     // console.log(args(method.fnc));
@@ -152,6 +152,7 @@ async function resolver(req:any, res:any, method:imethod) {
     const param:any[] = [];
 
     for (let index = 0; index < method.args.length; index++) {
+        if(typeof method.args[index])
         if(method.args[index].format === format.PARAM) 
             param.push(req.params[method.args[index].name]);
         else if(method.args[index].format === format.JSON || method.args[index].format === format.XML){
@@ -162,7 +163,7 @@ async function resolver(req:any, res:any, method:imethod) {
         }
         else if (method.args[index].format === format.TEXT){}
         else if (method.args[index].format === format.FILE){ 
-            param.push(req.files[method.args[index].name]) 
+            param.push(req.file[method.args[index].name]) 
         }
         // @TODO: add the rest of the format options
 
@@ -197,3 +198,10 @@ async function resolver(req:any, res:any, method:imethod) {
     
     return res.status(result.code).send((result.type !== undefined) ? result.message : JSON.stringify(result));
 }
+
+// export interface queryArg extends methodArg { [name:string]:any, type: };
+// export type paramArg    = any;
+// export type jsonArg     = any;
+// export type xmlArg      = any;
+// export type textArg     = any;
+// export type fileArg     = any;
