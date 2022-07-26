@@ -1,15 +1,3 @@
-// export enum IO {
-//     None = 0,
-//     CLI = 1 << 0,
-//     WEB = 1 << 1,
-//     SOC = 1 << 2,
-//     ALL = ~(~0 << 3),
-// }
-//
-// interface I0 {
-//     [name:string]: number
-// }
-
 export interface iinterface{
     identifier: string
     name: string
@@ -17,6 +5,13 @@ export interface iinterface{
     bind: Function
     middleware: Function
 }
+
+export function Interface(identifier:string, name:string) {
+	this.identifer = identifer;
+	this.name = name;
+}
+
+Interface.prototype._bind
 
 export function instanceOfInterface(object:any): object is iinterface {
     return 'identifier' in object;

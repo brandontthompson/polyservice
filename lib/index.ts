@@ -67,20 +67,10 @@ function register(module:iservice | iinterface) {
 /**
  * @public
  */
-function init() {
-    bind();
+function init(initOpts:Paritial<>) {
+    _bind();
     console.log(`Loading ${services.length} service(s)...`)
     for (let index = 0; index < services.length; index++) {
-        // if(services[index].interface != "ALL"){
-        //     const obj = interfaces.find(({identifier}) =>  services[index].interface.includes(identifier))
-        //     obj.init(services[index]);
-        //     console.log("LOADED: ", obj.name, services[index].name);
-        // }
-        // else
-        //     for (const [name, obj] of Object.entries(interfaces)){
-        //         obj.init(services[index]);
-        //         console.log("LOADED: ", obj.name, services[index].name);
-        //     }
         let addCnt:number = 0;
         const target:number = (services[index].interface.split(" ")).length;
         for (const [iterator, obj] of Object.entries(interfaces)) {
@@ -92,6 +82,7 @@ function init() {
             if(parseInt(iterator) >= (interfaces.length - 1) && addCnt < target) console.log("FAILED TO LOAD ONE OR MORE SERVICE: ", services[index].interface, services[index].name)
         }
     }
+    initOpts?.onStart();
     //@BUG: This will start an HTTP listener even if there is no interfaces tha require the HTTP server
     HttpListener.Instance.Listen();
 }
@@ -119,7 +110,7 @@ function use(middleware:imiddleware|any) {
 /**
  * @private
  */
-function bind() {
+function _bind() {
     console.log(`Binding ${services.length} service(s)...`)
     for (let index = 0; index < services.length; index++) {
         for (const [iface, obj] of Object.entries(_interface.default)) {
