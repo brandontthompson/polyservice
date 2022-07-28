@@ -1,4 +1,4 @@
-export interface ierror{
+export interface polyError{
     errorCode: number
     errorName: string
     errorResponse: number
