@@ -1,5 +1,5 @@
 import {polyerror} from "./polyerror";
-export interface iresult{
+export interface result{
     error?: polyerror 
     code: any
     message: any

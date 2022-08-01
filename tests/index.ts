@@ -1,15 +1,11 @@
-import express from 'express';
-import { middleware, service } from '../index';
-import { web } from '../lib/interface/web';
+import { middleware, polyservice } from '../index';
+import { web } from './web';
 
 (() => {
 
-    service.register(web);
-    service.register(require('./testservice').test);
-    service.use(express.urlencoded({extended:false}));
-    service.use(express.json());
-    service.use(require('./middleware.test').testmiddleware);
-    service.use(middleware.simpleError)
-    service.init();
+    polyservice.register(web);
+    polyservice.register(require('./testservice').test);
+    polyservice.use(require('./middleware.test').testmiddleware);
+    polyservice.init();
 
 })();

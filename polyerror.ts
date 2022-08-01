@@ -1,4 +1,4 @@
-export interface polyError{
+export interface polyerror{
     errorCode: number
     errorName: string
     errorResponse: number

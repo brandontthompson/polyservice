@@ -1,36 +1,11 @@
-import { authType, format, iresult, imethod } from "../index";
-import { iparam } from "../iparam";
-
-export const print:imethod = {
+import { method } from "../service";
+import { result } from "../result";
+import { polyarg } from "../service";
+import {web} from "./web";
+export const print:method = {
+	controller: web,
     name: "print",
-    request: "GET",
-    protect: {
-        type: authType.PARAM,
-        fnc: ((key:string, obj:any) => {
-            console.log("AA", key);
-            
-            // console.log(key, obj);
-            return true;
-        }),
-    },
-    alias: "prnt",
-    desc: "print the variable",
-    args: [
-        {
-            name: "value",
-            alias: "",
-            desc: "",
-            type: "string",
-            format: format.PARAM,
-        },
-        {
-            name: "optional",
-            optional: true,
-            type: "object",
-            format: format.JSON,
-        },
-    ],
-    fnc:  ((str:string, optional:object, context:any): iresult => {
+    fnc:  ((str:{name:"str", type:"string"}, optional:{name:"optional", optional:true, type:"object"}, context:any): result => {
         console.log(optional, context);
         str = str;
         context.store = { passedStr: str }
@@ -38,8 +13,7 @@ export const print:imethod = {
             path: "/api/testservice/v2/print",
             maxAge: 360000
         }
-        let response:iresult = {
-            error:false,
+        let response:result = {
             code: 200,
             message:str,
             // type: "application/xml"

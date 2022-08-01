@@ -1,32 +1,21 @@
-export interface iarg{
-    name: string
-    alias?: string
-    desc?: string
-    optional?: boolean
-    type: string
-    format: format
-}
-
-export interface methodArg {
-    [name:string]:any
-    type:string
-}
+import {controller} from "./controller";
 
 export interface method{
-    controller?: controller 
-    name: string
-    fnc(...args:polyarg)
+	controller?: controller;
+	name: string;
+	fnc(...args:any):any;
 }
 
 export interface service{
-    interface: string
-    version?: string,
-    name: string
-    method: imethod[]
+	type?:"service";
+	controller?: controller | controller[];
+	version?: string;
+	name: string;
+	method: method[];
 }
 
-export type Partial<polyarg> = {
+export type polyarg = {
 	name:string;
 	optional?:boolean;
-	type:ReturnType<this>;
+	type:(this:this) => string;
 }

@@ -1,8 +1,6 @@
-// import { IO } from "../index";
-import { imiddleware } from "../index";
+import { middleware } from "../middleware";
 
-export const testmiddleware:imiddleware = {
-    interface: "all",
+export const testmiddleware:middleware = {
     namespace: "testservice", // Note this optional param if blank all services will use this middlware
     fnc: function (req:any, res:any, next:Function) {            
         console.log("MIDDWARE");

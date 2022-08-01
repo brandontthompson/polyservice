@@ -1,5 +1,7 @@
+import {service} from "./service";
+
 export interface controller{
-	type: "controller";
+	type?: "controller";
 	name: string;
 	init(): void;
 	bind(service:service): void;
