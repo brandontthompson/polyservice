@@ -1,9 +1,10 @@
-import { method } from "../service";
+import { webMethod, requestType } from "./web";
 import { result } from "../result";
 import { polyarg } from "../service";
 import {web} from "./web";
-export const print:method = {
+export const print:webMethod = {
 	controller: web,
+	request: requestType.POST,
     name: "print",
     fnc:  ((str:{name:"str", type:"string"}, optional:{name:"optional", optional:true, type:"object"}, context:any): result => {
         console.log(optional, context);

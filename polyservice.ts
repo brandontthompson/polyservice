@@ -1,6 +1,5 @@
 import { service } from "./service";
 import { middleware } from "./middleware";
-import { HttpListener } from "./server";
 import {controller, instanceOfController} from "./controller";
 
 /**
@@ -47,7 +46,7 @@ export const polyservice:polyservice & {options:{log:boolean}} = {
  */
 function register(module:service|controller) {
 	if(instanceOfController(module)) {controllers.push(module); return;}
-	if(!module.controller) {lateload.push({module:module, load:"bind"}); return;}
+	if(!module.controller) { lateload.push({module:module, load:"bind"}); return;}
 	// modify the object so we can bind it in a single for loop
 	module.controller = (Array.isArray(module.controller)) ? module.controller : [module.controller];
 	services[services.length] = module;
@@ -68,9 +67,13 @@ function register(module:service|controller) {
 function init(onStart?:Function, options?:options) {
 	polyservice.options = options || polyservice.options;
 	_bind();
+	
+	for(let index = 0, len = controllers.length; index < len; index++){
+		console.log(controllers[index].name);
+		controllers[index].init();
+	}
 //	console.log(`Loading ${services.length} service(s)...`)
-
-	onStart();
+	if(onStart) onStart();
 	//@BUG: This will start an HTTP listener even if there is no controllers tha require the HTTP server
 	//HttpListener.Instance.Listen();
 	// clear the matrix from memory
@@ -99,30 +102,8 @@ function use(middleware:middleware|any) {
  * @private
  */
 function _bind() {
-	console.log(`Binding ${services.length} service(s)...`);
 	for (let index:number = 0, len = lateload.length; index < len; index++){
 		for(let contind:number = 0, len = controllers.length; contind < len; contind++ )
-			contind[lateload[index].load](lateload[index].module);
-	}
-//	for (let index:number = 0, len = services.length; index < len; index++){
-//		let controller:controller[] = controllers;
-//		if(services[index]?.controller)
-//			controller = (isArray(services[index].controller)) ? services[index].controller : [services[index].controller];
-//						
-//		for(let conitr = 0, con = controller?.length; conitr < con; conitr++){
-//			controller[conitr].init(services[index]);
-//			console.log("LOADED: ", service.controller.name, services[index].name);
-//		}
-//	}
-//    for (let index = 0; index < services.length; index++) {
-//        for (const [iface, obj] of Object.entries(_controller.default)) {
-//            if(services[index].controller.includes(obj.identifier) || services[index].controller == "ALL"){
-//                console.log("BOUND: ", obj.name, services[index].name);
-//                services[index].method.forEach(method => {                   
-//                    if(method.protect && !method.protect.key) method.protect.key = "Key"
-//                });
-//                obj.bind(services[index]);
-//            }
-//        }        
-//    }
+			controllers[contind][lateload[index].load](lateload[index].module);}
+	console.log(`Bound ${services.length} service(s)...`);
 }

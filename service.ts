@@ -7,7 +7,6 @@ export interface method{
 }
 
 export interface service{
-	type?:"service";
 	controller?: controller | controller[];
 	version?: string;
 	name: string;
@@ -17,5 +16,5 @@ export interface service{
 export type polyarg = {
 	name:string;
 	optional?:boolean;
-	type:(this:this) => string;
+	type:string;
 }

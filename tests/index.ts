@@ -1,6 +1,6 @@
 import { middleware, polyservice } from '../index';
 import { web } from './web';
-
+import { HttpListener } from "../server";
 (() => {
 
     polyservice.register(web);
@@ -8,4 +8,5 @@ import { web } from './web';
     polyservice.use(require('./middleware.test').testmiddleware);
     polyservice.init();
 
+    HttpListener.Instance.Listen();
 })();
