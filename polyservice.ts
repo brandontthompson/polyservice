@@ -50,6 +50,23 @@ function register(module:service|controller) {
 	// modify the object so we can bind it in a single for loop
 	module.controller = (Array.isArray(module.controller)) ? module.controller : [module.controller];
 	services[services.length] = module;
+	const a:any = {}
+	for(const m in module.method){
+		const a = module.method[m].fnc
+		console.log(module.method[m].fnc, a);
+		type ct = Parameters<(a:string, b:string) => void>
+		type aaa<ct> = {
+			[Property in keyof Type]: Type[Property];
+		}
+		interface te extends ct{}
+		const headers: Array<Object> = Object.keys(ct).map(key => {
+		    return { text: key, value: key }
+		});
+		console.log(headers);
+		const b : te = {} as te;
+		console.log(b)
+
+	}
 	for(let index:number = 0, len = module.controller.length; index < len; index++ ){
 		module.controller[index].bind(module);
 		// check if the controllers array has this if not add to it
