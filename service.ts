@@ -3,7 +3,8 @@ import {controller} from "./controller";
 export interface method{
 	controller?: controller;
 	name: string;
-	fnc(...args:any):any;
+	arguments?: {[name:string]: polyarg}
+	callback(...args:any):any;
 }
 
 export interface service{
@@ -14,7 +15,43 @@ export interface service{
 }
 
 export type polyarg = {
-	name:string;
-	optional?:boolean;
-	type:string;
+	type?:string;
+	ensure?:(obj:any) => boolean|any;
+}
+
+export interface ensurefail {
+	blame:{culprit:any; type:string, expected:string}
+	toString():string;
+}
+
+export function invoke(method:method, data:any):any{
+	const result = validate(method,data)
+	if(!result || (typeof result !== "boolean" && ('blame' in (result as ensurefail)))) {console.log(result.toString()); return result}
+	const expected:string[] = ((f:any):string[] => f.toString().replace (/[\r\n\s]+/g, ' ').
+            match (/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/).
+            slice (1,3).
+            join ('').
+            split (/\s*,\s*/))(method.callback);
+	const args:any[] = [];
+	for(let index = 0, len = expected.length; index < len; index++){
+		args[index] = data[expected[index]];
+	}
+	return method.callback(...args);
+}
+
+export function validate(method:method, data:object):boolean|ensurefail{
+	if(!method.arguments) return true;
+	if(Object.keys(method.arguments).length < method.callback.length) {}
+	for(const key in method.arguments){
+		const result = ensure(method.arguments[key], data[key]);
+		if(!result || (typeof result !== "boolean" && ('blame' in (result as ensurefail)))) return result;
+	}
+	return true;
+}
+
+export function ensure(argument:polyarg, against:any):boolean|ensurefail|any{
+	if(argument.ensure) return argument.ensure(against);
+	const types:string[] = argument.type?.split("|");
+	if(!argument.type || types.includes("any") || types.includes(typeof against)) return true;
+	return {blame:{culprit:against, type: typeof against, expected:types.length > 1 ? types : types[0]}, toString:() => `${against} is typeof ${typeof against} expected type of ${Array.isArray(types)? types.concat(" OR ") : types}`};
 }

@@ -1,13 +1,19 @@
 import { webMethod, requestType } from "./web";
 import { result } from "../result";
 import { polyarg } from "../service";
-import {web} from "./web";
+import {web, requestMethod} from "./web";
 export const print:webMethod = {
 	controller: web,
 	request: requestType.POST,
     name: "print",
-    fnc:  ((str:{name:"str", type:"string"}, optional:{name:"optional", optional:true, type:"object"}, context:any): result => {
-        console.log(optional, context);
+    arguments: {
+    	str:{type:"string", requestMethod: requestMethod.PARAM},
+	optional:{type:"object | undefined", requestMethod: requestMethod.JSON}
+    },
+    callback: function(str:string, optional:object, context:any): result {
+	
+    //_callback (str:{name:"str", type:"string"}, optional:{name:"optional", optional:true, type:"object"}, context:any): result {
+        console.log(str, optional, context);
         str = str;
 //        context.store = { passedStr: str }
 //        context.storeopts = {
@@ -21,5 +27,5 @@ export const print:webMethod = {
         };
 
         return response;
-    }),
+    },
 }
