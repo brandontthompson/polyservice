@@ -8,6 +8,7 @@ import { middleware } from "../middleware";
 const app = express();
 const router = Router();
 const middlewares:middleware[] = [];
+const API_BASE:string = process.env.API_BASE || "";
 
 export enum requestType {
 	GET 	= "get",
@@ -51,7 +52,7 @@ export const web:controller = {
 };
 
 function init() {
-    app.use("/"+process.env.API_BASE,router);
+    app.use("/"+API_BASE,router);
 
     HttpListener.app = app;
 }
@@ -59,22 +60,21 @@ function init() {
 function bind(service:service|webService) {
 
     // setup the context so we can use it later
-    app.use((req:any, res:any, next:Function) => {
-        if(!res.locals.context) res.locals.context = {}; 
-        return next();
-    });
+	app.use((req:any, res:any, next:Function) => {
+	    if(!res.locals.context) res.locals.context = {}; 
+	    return next();
+	});
 
-    app.use(express.urlencoded({extended:false}));
-    app.use(express.json());
+	app.use(express.urlencoded({extended:false}));
+	app.use(express.json());
 
-    for (let index = 0; index < middlewares.length; index++) {
-        const middleware:middleware | any = middlewares[index];
-        middleware.namespace ? app.use("/"+process.env.API_BASE+"/"+middleware.namespace, middleware.fnc) : app.use(middleware.fnc);   
-    }
+	for (let index = 0; index < middlewares.length; index++) {
+	    const middleware:middleware | any = middlewares[index];
+	    middleware.namespace ? app.use("/"+(API_BASE) ? API_BASE+"/" : ""+middleware.namespace, middleware.callback) : app.use(middleware.callback);   
+	}
     service.method.forEach((method:webMethod, index)=> {
 
         const url = buildURL(service, method);
-	console.log(url)
 //        if(method.protect != undefined && method.protect != null){
 //            const protection:iauth = method.protect;
 //
@@ -103,44 +103,50 @@ function middleware(middleware:middleware){
  * @private
  * builds the URL for each service's method
  */
-function buildURL(service:service, method:method) {
+function buildURL(service:service, method:webMethod) {
     let url = "/" +service.name+"/" + ((service.version) ? service.version + "/" : "") + method.name;
 
 //    if((method.protect && method.protect.type === authType.PARAM )|| (method.protect && method.protect.type === authType.PARAM_AUTHORIZATION )|| (method.protect && method.protect.type === authType.PARAM_BODY))
 //        url +=  "/:"+method.protect.key;
 //
-//    method.args.forEach(arg => {
-//        if(arg.format === format.PARAM)
-//            url += "/:"+arg.name;
-//    });    
+    Object.keys(method.arguments).forEach((key:string) => {
+	    const argument:webarg = method.arguments[key];
+	    if(argument.requestMethod === requestMethod.PARAM)
+		    url += "/:"+key
+    });
+
     return url;
 }
 
 async function resolver(req:any, res:any, method:webMethod) {   
 
-	const param:any[] = [];
+//	const param:any[] = [];
+	const param:any = {};
 	for(const argument in method.arguments){
 		const target:webarg = method.arguments[argument];
 		if(target.requestMethod === requestMethod.PARAM) 
-		    param.push(req.params[argument]);
+		    //param.push(req.params[argument]);	
+		    param[argument] = req.params[argument];
 		else if(target.requestMethod === requestMethod.JSON || target.requestMethod === requestMethod.XML)
-		    param.push(req.body[argument]);	
+		    //param.push(req.body[argument]);	
+		    param[argument] = req.body[argument];
 		else if (target.requestMethod === requestMethod.QUERY)
-		    param.push(req.query[argument]);
+		    //param.push(req.query[argument]);
+		    param[argument] = req.query[argument];
 		else if (target.requestMethod === requestMethod.TEXT){}
 		else if (target.requestMethod === requestMethod.FILE)
-		    param.push(req.file[argument]);
+		    //param.push(req.file[argument]);
+		    param[argument] = req.file[argument];
 		// @TODO: add the rest of the format options
-		const test = ensure(target, param[param.length - 1]);
-		if(!test) return res.status(400).end();
+		console.log(param)
+		//const test = ensure(target, param[param.length - 1], argument);
+		const test = ensure(target, param[argument], argument);
+		if(!test || (typeof test !== "boolean" && ('blame' in (test as ensurefail)))) return res.status(400).send(test.toString());
 		    
 	}
-//
-//    if(param.length != method.args.length)
-//        return res.status(400).end();
-//
-    	const ret:result|ensurefail = invoke(method, {...param, context:res.locals.context});
-	if(!ret || ('blame' in (ret as ensurefail))) { console.log(ret.toString()); return res.status(400).end();}
+  	
+	const ret:result|ensurefail = invoke(method, {...param, context:res.locals.context});
+	if(!ret || (typeof ret !== "boolean" && ('blame' in (ret as ensurefail)))) { console.log(ret.toString()); return res.status(400).end();}
 //    const result:result = method.callback(...param, res.locals.context);
 //
 //    if(!result) res.status(500).end();

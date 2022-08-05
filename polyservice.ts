@@ -50,12 +50,26 @@ function register(module:service|controller) {
 	// modify the object so we can bind it in a single for loop
 	module.controller = (Array.isArray(module.controller)) ? module.controller : [module.controller];
 	services[services.length] = module;
+	const stime1 = Date.now();
+	//const p = [];
+//	module.controller.forEach((controller:controller) => {
+//		console.log("Binding", module)
+//		p.push(new Promise(() => {
+//			controller.bind(module);
+//			// check if the controllers array has this if not add to it
+//			if(!controllers.includes(controller)) 
+//			controllers[controllers.length] = controller;
+//		}))
+//	})
+//	
+//	Promise.all(p).then(() => {console.log((Date.now()-stime1)/1000)})
 	for(let index:number = 0, len = module.controller.length; index < len; index++ ){
 		module.controller[index].bind(module);
 		// check if the controllers array has this if not add to it
 		if(controllers.includes(module.controller[index])) continue; 
  		controllers[controllers.length] = module.controller[index];
 	}
+	console.log((Date.now()-stime1)/1000)
 }
 
 
@@ -99,8 +113,10 @@ function use(middleware:middleware|any) {
  */
 function _bind() {
 	for (let index:number = 0, len = lateload.length; index < len; index++){
-		for(let contind:number = 0, len = controllers.length; contind < len; contind++ )
+		for(let contind:number = 0, len = controllers.length; contind < len; contind++ ){
+			console.log(controllers[contind], lateload[index].load)
 			controllers[contind][lateload[index].load](lateload[index].module);}
+		}
 	console.log(`Bound ${services.length} service(s)...`);
 }
 

@@ -20,7 +20,7 @@ export type polyarg = {
 }
 
 export interface ensurefail {
-	blame:{culprit:any; type:string, expected:string}
+	blame:{culprit:any; type:string, expected:string, key?:string}
 	toString():string;
 }
 
@@ -43,15 +43,16 @@ export function validate(method:method, data:object):boolean|ensurefail{
 	if(!method.arguments) return true;
 	if(Object.keys(method.arguments).length < method.callback.length) {}
 	for(const key in method.arguments){
-		const result = ensure(method.arguments[key], data[key]);
+		const result = ensure(method.arguments[key], data[key], key);
 		if(!result || (typeof result !== "boolean" && ('blame' in (result as ensurefail)))) return result;
 	}
 	return true;
 }
 
-export function ensure(argument:polyarg, against:any):boolean|ensurefail|any{
+export function ensure(argument:polyarg, against:any, key?:string):boolean|ensurefail|any{
 	if(argument.ensure) return argument.ensure(against);
-	const types:string[] = argument.type?.split("|");
-	if(!argument.type || types.includes("any") || types.includes(typeof against)) return true;
-	return {blame:{culprit:against, type: typeof against, expected:types.length > 1 ? types : types[0]}, toString:() => `${against} is typeof ${typeof against} expected type of ${Array.isArray(types)? types.concat(" OR ") : types}`};
+	const types:string[] = argument.type?.replace(/\s+/g, '').split("|");
+	if(!argument.type || types.includes("any") || types.includes("undefined") || types.includes(typeof against)) return true;
+	return {blame:{culprit:against, type: typeof against, expected:types.length > 1 ? types : types[0], key:key}, 
+		toString:() => `${against} is typeof ${typeof against} expected type of ${Array.isArray(types)? types.join(" OR ") : types}${key ? " for " + key : ""}`};
 }
