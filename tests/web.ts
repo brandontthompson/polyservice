@@ -1,9 +1,6 @@
 import express, { Router } from "express";
-import { service, method, polyarg, invoke, ensurefail, ensure } from "../service";
-import { controller } from "../controller";
-import { result } from "../result";
+import { service, method, polyarg, invoke, ensurefail, ensure, controller, result, middleware } from "../index";
 import { HttpListener } from "../server";
-import { middleware } from "../middleware";
 
 const app = express();
 const router = Router();

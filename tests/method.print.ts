@@ -1,6 +1,5 @@
 import { webMethod, requestType } from "./web";
-import { result } from "../result";
-import { polyarg } from "../service";
+import { result, polyarg } from "../index";
 import {web, requestMethod} from "./web";
 export const print:webMethod = {
 	controller: web,

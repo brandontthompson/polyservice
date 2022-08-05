@@ -1,4 +1,4 @@
-import {service} from "../service";
+import {service} from "../index";
 import { print } from "./method.print";
 import { web } from "./web";
 
