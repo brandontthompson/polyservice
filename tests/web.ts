@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import { service, method, polyarg, invoke, ensurefail, ensure, controller, result, middleware } from "../index";
 import { HttpListener } from "../server";
 
+export default express;
 const app = express();
 const router = Router();
 const middlewares:middleware[] = [];
@@ -49,9 +50,14 @@ export const web:controller = {
 };
 
 function init() {
-    app.use("/"+API_BASE,router);
+	for (let index = 0; index < middlewares.length; index++) {
+	    const middleware:middleware | any = middlewares[index];
+		console.log(middleware.callback.name)
+	    middleware.namespace ? app.use("/"+((API_BASE) ? API_BASE+"/" : "")+middleware.namespace, middleware.callback) : app.use(middleware.callback);   
+	}
+	app.use("/"+API_BASE,router);
 
-    HttpListener.app = app;
+	HttpListener.requestListener = app;
 }
 
 function bind(service:service|webService) {
@@ -62,13 +68,8 @@ function bind(service:service|webService) {
 	    return next();
 	});
 
-	app.use(express.urlencoded({extended:false}));
-	app.use(express.json());
-
-	for (let index = 0; index < middlewares.length; index++) {
-	    const middleware:middleware | any = middlewares[index];
-	    middleware.namespace ? app.use("/"+(API_BASE) ? API_BASE+"/" : ""+middleware.namespace, middleware.callback) : app.use(middleware.callback);   
-	}
+//	app.use();
+//	app.use(express.json());
     service.method.forEach((method:webMethod, index)=> {
 
         const url = buildURL(service, method);

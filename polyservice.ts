@@ -94,8 +94,8 @@ function init(onStart?:Function, options?:options) {
  * @param middleware
  */
 function use(middleware:middleware|any) {
-	if(!("fnc" in (middleware as any)))
-		middleware = {fnc: middleware};
+	if(!("callback" in (middleware as any)))
+		middleware = {callback: middleware};
 	if(!middleware.controller) { lateload.push({module:middleware, load:"middleware"}); return; }
 	middleware.controller = (Array.isArray(middleware.controller)) ? middleware.controller : [middleware.controller];
 	middlewares.push(middleware);
@@ -114,8 +114,8 @@ function use(middleware:middleware|any) {
 function _bind() {
 	for (let index:number = 0, len = lateload.length; index < len; index++){
 		for(let contind:number = 0, len = controllers.length; contind < len; contind++ ){
-			console.log(controllers[contind], lateload[index].load)
-			controllers[contind][lateload[index].load](lateload[index].module);}
+			const cotr:{[index:string]:any} = controllers[contind];	
+			cotr[lateload[index].load](lateload[index].module);}
 		}
 	console.log(`Bound ${services.length} service(s)...`);
 }

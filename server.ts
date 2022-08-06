@@ -7,7 +7,7 @@ dotenv.config();
 
 export class HttpListener {
     private static _instance: HttpListener;
-    public static app:any;
+    public static requestListener:Function;
     public static options: object;
     public static port: Number;
     public httpServer: httpServer | httpsServer | undefined;
@@ -28,7 +28,7 @@ export class HttpListener {
             cert: readFileSync(c)
         } : {};
         
-        this.httpServer = HttpListener.app ? server.createServer(HttpListener?.app, HttpListener.options) : server.createServer(HttpListener.options);          
+        this.httpServer = HttpListener.requestListener ? server.createServer(HttpListener?.requestListener, HttpListener.options) : server.createServer(HttpListener.options);          
     }
 
     public static get Instance():HttpListener{
