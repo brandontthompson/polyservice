@@ -1,6 +1,7 @@
 import express, { Router } from "express";
-import { service, method, polyarg, invoke, ensurefail, ensure, controller, result, middleware } from "../index";
-import { HttpListener } from "../server";
+import { service, method, polyarg, invoke, ensurefail, ensure, controller, result, middleware, controllerOptions, HttpListener } from "../index";
+import { Server as http } from "http";
+import { Server as https } from "https";
 
 export default express;
 const app = express();
@@ -42,26 +43,28 @@ export type webarg = polyarg & {
 	requestMethod:requestMethod	
 }
 
-export const web:controller = {
+export const web:controller & {apibase:string|undefined} = {
     name: "web",
     init: init,
     bind: bind,
     middleware: middleware,
+    apibase: API_BASE
 };
 
 // Pass options throught init so we can use them in controllers later :D 
-function init(options:any) {
+function init(options:{ httplistener:http|https|HttpListener, httpoptions?:any, httpserverout?:any, apibase?:string } & controllerOptions) {
+	if(options.apibase) web.apibase = options.apibase;
 	for (let index = 0; index < middlewares.length; index++) {
 	    const middleware:middleware | any = middlewares[index];
 		console.log(middleware.callback.name)
-	    middleware.namespace ? app.use("/"+((API_BASE) ? API_BASE+"/" : "")+middleware.namespace, middleware.callback) : app.use(middleware.callback);   
+	    middleware.namespace ? app.use("/"+((web.apibase) ? web.apibase+"/" : "")+middleware.namespace, middleware.callback) : app.use(middleware.callback);   
 	}
-	app.use("/"+API_BASE,router);
-
-	HttpListener.requestListener = app;
+	app.use("/"+web.apibase,router);
+	if(!options.httplistener) throw new Error("HttpListener option not passed, express listen failed to start");
+	options.httpserverout = options.httplistener.createServer(app, options.httpoptions);
 }
 
-function bind(service:service|webService) {
+function bind(service:webService) {
 
     // setup the context so we can use it later
 	app.use((req:any, res:any, next:Function) => {
@@ -69,9 +72,8 @@ function bind(service:service|webService) {
 	    return next();
 	});
 
-	if(!("requestType" in  (service as webService))) return;
+	if(!("request" in (service.method[0] as webMethod))){ console.log("WARNING: FAILED TO BIND SERVICE: " + service.name); return; }
     service.method.forEach((method:webMethod, index:number)=> {
-
         const url = buildURL(service, method);
 //        if(method.protect != undefined && method.protect != null){
 //            const protection:iauth = method.protect;
@@ -101,14 +103,17 @@ function middleware(middleware:middleware){
  * @private
  * builds the URL for each service's method
  */
-function buildURL(service:service, method:webMethod) {
+function buildURL(service:service, method:webMethod):string {
     let url = "/" +service.name+"/" + ((service.version) ? service.version + "/" : "") + method.name;
 
 //    if((method.protect && method.protect.type === authType.PARAM )|| (method.protect && method.protect.type === authType.PARAM_AUTHORIZATION )|| (method.protect && method.protect.type === authType.PARAM_BODY))
 //        url +=  "/:"+method.protect.key;
 //
+	if(method.arguments) 
     Object.keys(method.arguments).forEach((key:string) => {
-	    const argument:webarg|undefined = method?.arguments[key];
+	    // need to add another check because typescript strict mode sucks and doesnt realise this cant be undefined if we checked already
+	    if(!method.arguments) return;
+	    const argument:webarg = method?.arguments[key];
 	    if(argument.requestMethod === requestMethod.PARAM)
 		    url += "/:"+key
     });

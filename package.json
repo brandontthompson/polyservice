@@ -15,7 +15,8 @@
   },
   "scripts": {
     "start": "tsc && node dist/index.js",
-    "test": "tsc && node dist/tests/index.js"
+    "test":"node dist/tests/index.js",
+    "test:build": "tsc && node dist/tests/index.js"
   },
   "repository": {
     "type": "git",

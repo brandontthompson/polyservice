@@ -1,6 +1,6 @@
 import { service, method, polyarg } from "./service";
 import { middleware } from "./middleware";
-import {controller, instanceOfController} from "./controller";
+import {controller, instanceOfController, controllerOptions} from "./controller";
 
 /**
  * @private
@@ -9,16 +9,11 @@ interface polyservice{
 	register(module:service | controller): void;
 	use(middleware:middleware|any): void;
 	bind():void;
-	init(startCallback?:Function, options?:any):void;
+	init(options?:controllerOptions, startCallback?:Function):void;
 	services():service[];
 	controllers():controller[];
 	middlewares():middleware[];
 }
-
-interface options{
-	log:boolean;
-}
-
 /**
  * @private
  */
@@ -51,18 +46,7 @@ function register(module:service|controller) {
 	module.controller = (Array.isArray(module.controller)) ? module.controller : [module.controller];
 	services[services.length] = module;
 	const stime1 = Date.now();
-	//const p = [];
-//	module.controller.forEach((controller:controller) => {
-//		console.log("Binding", module)
-//		p.push(new Promise(() => {
-//			controller.bind(module);
-//			// check if the controllers array has this if not add to it
-//			if(!controllers.includes(controller)) 
-//			controllers[controllers.length] = controller;
-//		}))
-//	})
-//	
-//	Promise.all(p).then(() => {console.log((Date.now()-stime1)/1000)})
+
 	for(let index:number = 0, len = module.controller.length; index < len; index++ ){
 		module.controller[index].bind(module);
 		// check if the controllers array has this if not add to it
@@ -77,14 +61,13 @@ function register(module:service|controller) {
 /**
  * @public
  */
-function init(onStart?:Function, options?:options) {
-	polyservice.options = options || polyservice.options;
+function init(options?:controllerOptions, onStart?:Function) {
+	polyservice.options = polyservice.options;
+
 	_bind();
 	
-	for(let index = 0, len = controllers.length; index < len; index++){
-		console.log(controllers[index].name);
-		controllers[index].init();
-	}
+	for(let index = 0, len = controllers.length; index < len; index++)
+		controllers[index].init(options);
 	console.log(`Loading ${services.length} service(s)...`)
 	if(onStart) onStart();
 }
@@ -113,10 +96,9 @@ function use(middleware:middleware|any) {
  */
 function _bind() {
 	for (let index:number = 0, len = lateload.length; index < len; index++){
-		for(let contind:number = 0, len = controllers.length; contind < len; contind++ ){
-			const cotr:{[index:string]:any} = controllers[contind];	
-			cotr[lateload[index].load](lateload[index].module);}
-		}
+		for(let contind:number = 0, len = controllers.length; contind < len; contind++ )
+			(controllers[contind] as {[index:string]:any})[lateload[index].load](lateload[index].module);}
+	lateload = [];
 	console.log(`Bound ${services.length} service(s)...`);
 }
 

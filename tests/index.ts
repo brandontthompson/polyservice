@@ -1,13 +1,13 @@
 import { middleware, polyservice } from '../index';
 import express ,{ web } from './web';
-import { HttpListener } from "../server";
+import { HttpListener } from "../httplistener";
 (() => {
 
     polyservice.register(require('./testservice').test);
 	polyservice.use(express.json())
 	polyservice.use(express.urlencoded({extended:false}))
     polyservice.use(require('./middleware.test').testmiddleware);
-    polyservice.init();
+    polyservice.init({httpListener: HttpListener});
 
-    HttpListener.Instance.Listen();
+    HttpListener.Instance.Listen(process.env.HTTP_PORT||3000);
 })();
