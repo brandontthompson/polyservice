@@ -49,7 +49,8 @@ export const web:controller = {
     middleware: middleware,
 };
 
-function init() {
+// Pass options throught init so we can use them in controllers later :D 
+function init(options:any) {
 	for (let index = 0; index < middlewares.length; index++) {
 	    const middleware:middleware | any = middlewares[index];
 		console.log(middleware.callback.name)
@@ -68,9 +69,8 @@ function bind(service:service|webService) {
 	    return next();
 	});
 
-//	app.use();
-//	app.use(express.json());
-    service.method.forEach((method:webMethod, index)=> {
+	if(!("requestType" in  (service as webService))) return;
+    service.method.forEach((method:webMethod, index:number)=> {
 
         const url = buildURL(service, method);
 //        if(method.protect != undefined && method.protect != null){
@@ -108,7 +108,7 @@ function buildURL(service:service, method:webMethod) {
 //        url +=  "/:"+method.protect.key;
 //
     Object.keys(method.arguments).forEach((key:string) => {
-	    const argument:webarg = method.arguments[key];
+	    const argument:webarg|undefined = method?.arguments[key];
 	    if(argument.requestMethod === requestMethod.PARAM)
 		    url += "/:"+key
     });
