@@ -1,6 +1,6 @@
 import {service} from "../index";
 import { print } from "./method.print";
-import { web } from "./web";
+import { web } from '../../polyexpress';
 
 export const test:service = {
     name: "testservice",

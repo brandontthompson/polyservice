@@ -36,9 +36,9 @@ export function invoke(method:method, data:any):any{
 	for(let index = 0, len = expected.length; index < len; index++){
 		args[index] = data[expected[index]];
 	}
-	return new Promise(async (result:any, reject:any)=>{
-		return await method.callback(...args);
-	}).then(res => res);
+	return new Promise(async (resolve:any, reject:any)=>{
+		resolve(await method.callback(...args));
+	});
 }
 
 export function validate(method:method, data:{[index:string]:any}):boolean|ensurefail{

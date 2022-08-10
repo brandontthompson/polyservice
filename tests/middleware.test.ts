@@ -5,7 +5,7 @@ export const testmiddleware:middleware = {
     callback: function (req:any, res:any, next:Function) {            
         console.log("MIDDWARE");
                 
-        res.locals.context.CustomValue = "Some data we can use later"
+        //res.locals.context.CustomValue = "Some data we can use later"
         
         next();
     }

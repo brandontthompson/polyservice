@@ -45,7 +45,6 @@ function register(module:service|controller) {
 	// modify the object so we can bind it in a single for loop
 	module.controller = (Array.isArray(module.controller)) ? module.controller : [module.controller];
 	services[services.length] = module;
-	const stime1 = Date.now();
 
 	for(let index:number = 0, len = module.controller.length; index < len; index++ ){
 		module.controller[index].bind(module);
@@ -53,7 +52,6 @@ function register(module:service|controller) {
 		if(controllers.includes(module.controller[index])) continue; 
  		controllers[controllers.length] = module.controller[index];
 	}
-	console.log((Date.now()-stime1)/1000)
 }
 
 
