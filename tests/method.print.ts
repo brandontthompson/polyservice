@@ -5,7 +5,7 @@ export const print:webMethod = {
 	request: requestType.POST,
     name: "print",
     arguments: {
-    	str:{type:"string", requestMethod: requestMethod.PARAM,
+    	str:{type:"string", requestMethod: requestMethod.PARAM},
     	str1:{type:"string", requestMethod: requestMethod.QUERY},
 	optional:{type:"object | undefined", requestMethod: requestMethod.PARAM}
     },

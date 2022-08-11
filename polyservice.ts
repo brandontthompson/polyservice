@@ -25,7 +25,7 @@ let lateload:{module:service|middleware, load:string}[] = [];
  * Module exports.
  * @public
  */
-export const polyservice:polyservice & {options:{log:boolean}} = {
+export const polyservice:polyservice & {options:{log:boolean}, logger:Function|any} = {
 	register: register,
 	use: use,
 	bind: _bind,
@@ -34,6 +34,7 @@ export const polyservice:polyservice & {options:{log:boolean}} = {
 	controllers: () => [...controllers],
 	middlewares: () => [...middlewares],
 	options:{log:true},
+	logger:(message:any) => console.log(message),
 };
 /**
  * @public
@@ -66,7 +67,7 @@ function init(options?:controllerOptions, onStart?:Function) {
 	
 	for(let index = 0, len = controllers.length; index < len; index++)
 		controllers[index].init(options);
-	console.log(`Loading ${services.length} service(s)...`)
+	polyservice.logger(`Loading ${services.length} service(s)...`)
 	if(onStart) onStart();
 }
 
@@ -97,6 +98,6 @@ function _bind() {
 		for(let contind:number = 0, len = controllers.length; contind < len; contind++ )
 			(controllers[contind] as {[index:string]:any})[lateload[index].load](lateload[index].module);}
 	lateload = [];
-	console.log(`Bound ${services.length} service(s)...`);
+	polyservice.logger(`Bound ${services.length} service(s)...`);
 }
 

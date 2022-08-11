@@ -3,7 +3,8 @@ import {controller} from "./controller";
 export interface method{
 	controller?: controller;
 	name: string;
-	arguments?: {[name:string]: polyarg}
+	middleware:middleware|middleware[];
+	arguments?: {[name:string]: polyarg};
 	callback(...args:any):any;
 }
 
