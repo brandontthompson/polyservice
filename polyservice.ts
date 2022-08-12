@@ -20,6 +20,7 @@ interface polyservice{
 const services:service[] = [];
 const controllers:controller[] = [];
 const middlewares:middleware[] = [];
+const plugins:polyplugin[] = [];
 let lateload:{module:service|middleware, load:string}[] = [];
 /**
  * Module exports.
@@ -101,3 +102,6 @@ function _bind() {
 	polyservice.logger(`Bound ${services.length} service(s)...`);
 }
 
+function plugin(plugin:polyplugin){
+	
+}
