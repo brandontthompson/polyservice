@@ -1,13 +1,14 @@
 import { service, method, polyarg } from "./service";
 import { middleware } from "./middleware";
 import {controller, instanceOfController, controllerOptions} from "./controller";
-
+import { polyplugin } from "./polyplugin";
 /**
  * @private
  */
-interface polyservice{
+export interface polyservice{
 	register(module:service | controller): void;
 	use(middleware:middleware|any): void;
+	plugin(plugin:polyplugin):void;
 	bind():void;
 	init(options?:controllerOptions, startCallback?:Function):void;
 	services():service[];
@@ -29,6 +30,7 @@ let lateload:{module:service|middleware, load:string}[] = [];
 export const polyservice:polyservice & {options:{log:boolean}, logger:Function|any} = {
 	register: register,
 	use: use,
+	plugin: plugin,
 	bind: _bind,
 	init: init,
 	services: () => [...services],
@@ -65,7 +67,8 @@ function init(options?:controllerOptions, onStart?:Function) {
 	polyservice.options = polyservice.options;
 
 	_bind();
-	
+	for(let index = 0, len = plugins.length; index < len; index++)
+		plugins[index].execute(polyservice);
 	for(let index = 0, len = controllers.length; index < len; index++)
 		controllers[index].init(options);
 	polyservice.logger(`Loading ${services.length} service(s)...`)
@@ -103,5 +106,5 @@ function _bind() {
 }
 
 function plugin(plugin:polyplugin){
-	
+	plugins.push(plugin);
 }
