@@ -2,8 +2,6 @@
 ## The easiest way to write microservices
 Focus on writing business logic not boilerplate for your microservices!
 
-[![NPM Version][npm-version-image]][npm-url]
-[![NPM Install Size][npm-install-size-image]][npm-install-size-url]
 What is polyservice?
 
 Polyservice is an extremely lightweight and fast way to write business logic that needs to run in multiple environments with many IO controllers.
@@ -15,16 +13,13 @@ The goal of Polyservice, aside from being unopinionated about your project's str
 
 
 ## Installation
+[![NPM](https://nodei.co/npm/polyservice.png?compact=true)](https://npmjs.org/package/polyservice)
+
+
 polyservice is available through the npm registry
 ```
 $ npm install polyservice
 ```
-
-Polyservice is easy to use!
-1. Define your service
-2. Define and register your methods
-3. Register your service
-4. Run!
 
 ## Features
 - Robust controller system
@@ -112,7 +107,7 @@ You should now have a running http server with an endpoint at
 `localhost:3000/myservice/echo/MESSAGE`
 
 ## Full Documentation
-the full documentation can be found on the Wiki
+[the full documentation can be found on the Wiki](https://github.com/brandontthompson/polyservice/wiki)
 
 
 Additional Polyservice controller packages includes the following
