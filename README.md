@@ -1,5 +1,7 @@
 # Polyservice
 ## The easiest way to write microservices
+[![NPM version](https://img.shields.io/npm/v/polyservice.svg)](https://www.npmjs.com/package/polyservice)
+
 Focus on writing business logic not boilerplate for your microservices!
 
 What is polyservice?
