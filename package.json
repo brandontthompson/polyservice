@@ -2,8 +2,8 @@
   "name": "polyservice",
   "description": "The easiest way to write microservices. Focus on business logic not boilerplate!",
   "version": "1.0.5",
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "keywords": [
     "polyservice",
     "microservice",
