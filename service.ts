@@ -29,6 +29,7 @@ export interface ensurefail {
 export function invoke(method:method, data:any):any{
 	const result = validate(method,data)
 	if(!result || (typeof result !== "boolean" && ('blame' in (result as ensurefail)))) {console.log(result.toString()); return result}
+	// Will attempt to parse out the function variable order and use that to order incoming data
 	const expected:string[] = ((f:any):string[] => f.toString().replace (/[\r\n\s]+/g, ' ').
             match (/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/).
             slice (1,3).
@@ -56,7 +57,7 @@ export function validate(method:method, data:{[index:string]:any}):boolean|ensur
 export function ensure(argument:polyarg, against:any, key?:string):boolean|ensurefail|any{
 	if(argument.ensure) return argument.ensure(against);
 	const types:string[]|undefined = argument.type?.replace(/\s+/g, '').split("|");
-	if(!argument.type || typeof types === "undefined" ||types.includes("any") || types.includes("undefined") || types.includes(typeof against)) return true;
+	if(!argument.type || typeof types === "undefined" || types.includes("any") || (types.includes("undefined") && !against)  || types.includes(typeof against)) return true;
 	return {blame:{culprit:against, type: typeof against, expected:types.length > 1 ? types : types[0], key:key}, 
-		toString:() => `${against} is typeof ${typeof against} expected type of ${Array.isArray(types)? types.join(" OR ") : types}${key ? " for " + key : ""}`};
+		toString:() => `${(Array.isArray(against)) ? "Array" : against} is typeof ${typeof against} expected type of ${Array.isArray(types)? types.join(" OR ") : types}${key ? " for " + key : ""}`};
 }

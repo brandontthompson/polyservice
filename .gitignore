@@ -104,3 +104,5 @@ tests/cases/user/prettier/prettier
 .eslintcache
 .idea
 *.js
+*.d.ts
+*.d.ts.map
