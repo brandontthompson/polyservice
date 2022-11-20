@@ -57,7 +57,7 @@ export function validate(method:method, data:{[index:string]:any}):boolean|ensur
 export function ensure(argument:polyarg, against:any, key?:string):boolean|ensurefail|any{
 	if(argument.ensure) return argument.ensure(against);
 	const types:string[]|undefined = argument.type?.replace(/\s+/g, '').split("|");
-	if(!argument.type || typeof types === "undefined" || types.includes("any") || (types.includes("undefined") && types.length === 1 && !against)  || types.includes(typeof against)) return true;
+	if(!argument.type || typeof types === "undefined" || types.includes("any") || (types.includes("undefined") && !against)  || types.includes(typeof against)) return true;
 	return {blame:{culprit:against, type: typeof against, expected:types.length > 1 ? types : types[0], key:key}, 
 		toString:() => `${(Array.isArray(against)) ? "Array" : against} is typeof ${typeof against} expected type of ${Array.isArray(types)? types.join(" OR ") : types}${key ? " for " + key : ""}`};
 }
