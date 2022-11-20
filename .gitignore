@@ -106,3 +106,4 @@ tests/cases/user/prettier/prettier
 *.js
 *.d.ts
 *.d.ts.map
+lib/
