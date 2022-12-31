@@ -1,4 +1,5 @@
 import {controller} from "./controller";
+import {polyservice} from "./polyservice";
 import {polyarg} from "./polyarg";
 import {middleware} from "./middleware";
 
@@ -26,7 +27,7 @@ export function invoke(method:method|middleware, data:any):Promise<any>{
 	const result = validate(method,data);
 	// @TODO: allow this to be customized where instead of resolving on ensurefail it will reject
 	if(!result || (typeof result !== "boolean" && ('blame' in (result as ensurefail))))
-		return new Promise((resolve:any, reject:any) => { console.log(result.toString()); return resolve(result) });
+		return new Promise((resolve:any, reject:any) => { if(polyservice.options.log) polyservice.logger(result.toString()); return resolve(result); });
 	// Will attempt to parse out the function variable order and use that to order incoming data
 	const expected:string[] = ((f:any):string[] => f.toString().replace (/[\r\n\s]+/g, ' ').
             match (/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/).
