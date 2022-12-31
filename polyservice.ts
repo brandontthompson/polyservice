@@ -1,4 +1,5 @@
-import { service, method, polyarg } from "./service";
+import { service, method } from "./service";
+import { polyarg } from "./polyarg";
 import { polyservice as ipolyservice } from './polyservice';
 import { middleware } from "./middleware";
 import {controller, instanceOfController, controllerOptions} from "./controller";

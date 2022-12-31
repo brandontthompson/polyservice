@@ -1,4 +1,5 @@
 import {controller} from "./controller";
+import {polyarg} from "./polyarg";
 import {middleware} from "./middleware";
 
 export interface method{
@@ -16,19 +17,16 @@ export interface service{
 	method: method[];
 }
 
-export type polyarg = {
-	type?:string;
-	ensure?:(obj:any) => boolean|any;
-}
-
 export interface ensurefail {
 	blame:{culprit:any; type:string, expected:string, key?:string}
 	toString():string;
 }
 
-export function invoke(method:method, data:any):any{
-	const result = validate(method,data)
-	if(!result || (typeof result !== "boolean" && ('blame' in (result as ensurefail)))) {console.log(result.toString()); return result}
+export function invoke(method:method|middleware, data:any):Promise<any>{
+	const result = validate(method,data);
+	// @TODO: allow this to be customized where instead of resolving on ensurefail it will reject
+	if(!result || (typeof result !== "boolean" && ('blame' in (result as ensurefail))))
+		return new Promise((resolve:any, reject:any) => { console.log(result.toString()); return resolve(result) });
 	// Will attempt to parse out the function variable order and use that to order incoming data
 	const expected:string[] = ((f:any):string[] => f.toString().replace (/[\r\n\s]+/g, ' ').
             match (/(?:function\s*\w*)?\s*(?:\((.*?)\)|([^\s]+))/).
@@ -44,7 +42,7 @@ export function invoke(method:method, data:any):any{
 	});
 }
 
-export function validate(method:method, data:{[index:string]:any}):boolean|ensurefail{
+export function validate(method:method|middleware, data:{[index:string]:any}):boolean|ensurefail{
 	if(!method.arguments) return true;
 	if(Object.keys(method.arguments).length < method.callback.length) {}
 	for(const key in method.arguments){
