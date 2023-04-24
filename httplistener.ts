@@ -21,17 +21,22 @@ export class HttpListener {
 		if(!HttpListener.port) HttpListener.port = port;
 		HttpListener.options = (k && c)? {
 		    key: readFileSync(k),
-		    cert: readFileSync(c)
-		} : {};
+		    cert: readFileSync(c),
+		    ...HttpListener.options
+		} : {...HttpListener.options};
 		
 		this.httpServer = HttpListener.requestListener ? server.createServer(HttpListener?.requestListener, HttpListener.options) : server.createServer(HttpListener.options);          
 	}
 
-	public static createServer(app?:any){
+	public static createServer(app?:any, options?:any) : httpServer|httpsServer|undefined|void{
+		//if(this._instance) return this.Instance.httpServer;
+
 		HttpListener.requestListener = app;
+		HttpListener.options = { ...(HttpListener.options || {}), ...options };
+		//return this.Instance.httpServer;
 	}
 
-	public static get Instance():HttpListener{
+	public static get Instance() : HttpListener{
 		return this._instance || (this._instance = new this(this.port, this.key, this.cert));
 	}
 
