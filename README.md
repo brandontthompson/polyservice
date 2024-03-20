@@ -113,10 +113,10 @@ You should now have a running http server with an endpoint at
 
 
 Additional Polyservice controller packages includes the following
-* polyexpress - expressjs
+* [polyexpress - expressjs](https://github.com/brandontthompson/polyexpress)
 
 -- Still in development --
-* polysocket - socket.io
+* [polysocket - socket.io](https://github.com/brandontthompson/polysocket)
 * polycommand - Yargs
 * polyrpc - gRPC
 
