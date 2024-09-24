@@ -60,7 +60,6 @@ function register(module:service|controller) {
 	}
 }
 
-
 // @TODO: these loops can be optimized by how we register the services, for example if bucket all the services that need to be registerd with an IO then we can early exit the On^2 loop
 /**
  * @public
