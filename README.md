@@ -96,7 +96,7 @@ import { polyservice, HttpListener } from "polyservice";
 (() => {
 
   polyservice.register(myService);
-  polyservice.init({ httplistener: HttpListener.createServer } /** params to pass to the controller objects on init **/);
+  polyservice.init({ httplistener: HttpListener } /** params to pass to the controller objects on init **/);
   
   HttpListener.Instance.Listen(process.env.PORT || 3000);
 
